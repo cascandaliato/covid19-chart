@@ -16,6 +16,8 @@ jobs:
         run: |
           yarn install
           yarn build
+        env:
+          PUBLIC_URL: https://casca.dev/covid19-chart-react
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
