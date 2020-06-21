@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import Chart from './components/Chart';
-import Slider from './components/Slider';
 import times from 'lodash/times';
 // import Plotly from 'plotly.js';
 import Plotly from 'plotly.js-basic-dist';
+import React, { useEffect, useRef, useState } from 'react';
+import Slider from './components/Slider';
 
 export default () => {
   const [day, setDay] = useState(1);
@@ -29,18 +28,18 @@ export default () => {
         byRegion[region] = regionData;
         return byRegion;
       }, {});
-      const byRegionDate = data.reduce(
-        (m, { denominazione_regione: r, data: d, totale_casi: totalCases }) => ({
-          ...m,
-          [r]: { ...m[r], [Date.parse(d)]: { totalCases } },
-        }),
-        {},
-      );
+      // const byRegionDate = data.reduce(
+      //   (m, { denominazione_regione: r, data: d, totale_casi: totalCases }) => ({
+      //     ...m,
+      //     [r]: { ...m[r], [Date.parse(d)]: { totalCases } },
+      //   }),
+      //   {},
+      // );
 
-      const regions = Object.keys(byRegionDate);
-      const dates = Array.from(
-        new Set(Object.keys(byRegionDate).flatMap((r) => Object.keys(byRegionDate[r]))),
-      ).sort((a, b) => a - b);
+      // const regions = Object.keys(byRegionDate);
+      // const dates = Array.from(
+      //   new Set(Object.keys(byRegionDate).flatMap((r) => Object.keys(byRegionDate[r]))),
+      // ).sort((a, b) => a - b);
 
       const traces = [];
       for (const [region, data] of Object.entries(byRegion)) {
