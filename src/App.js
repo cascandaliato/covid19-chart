@@ -1,15 +1,26 @@
 import times from 'lodash/times';
-// import Plotly from 'plotly.js';
 import Plotly from 'plotly.js-basic-dist';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import createPlotlyComponent from 'react-plotly.js/factory';
 import Slider from './components/Slider';
+
+const Plot = createPlotlyComponent(Plotly);
 
 export default () => {
   const [day, setDay] = useState(1);
-  const graphDiv = useRef(null);
+  const [plotlyDiv, setPlotlyDiv] = useState(null);
+  const [chartData, setChartData] = useState([{}]);
+  const [chartLayout, setChartLayout] = useState({
+    responsive: true,
+    autosize: true,
+  });
+  const [chartFrames, setChartFrames] = useState([]);
+  const [chartRevision, setChartRevision] = useState(0);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
-    if (!graphDiv.current) return;
+    if (!plotlyDiv) return;
+
     (async () => {
       const data = await (
         await fetch(
@@ -137,60 +148,76 @@ export default () => {
           layout: frameLayout,
         });
       }
-      await Plotly.newPlot(graphDiv.current, {
-        data: frames[0].data,
-        layout,
-      });
-      Plotly.addFrames(graphDiv.current, frames);
-      Plotly.animate(graphDiv.current, null, {
-        transition: {
-          duration: 100,
-          easing: 'linear',
-        },
-        frame: {
-          duration: 100,
-          redraw: false,
-        },
-      });
-      setTimeout(() => {
-        console.log('stop');
-        Plotly.animate(graphDiv.current, [], { mode: 'next' });
-      }, 2000);
+      // await Plotly.newPlot(graphDiv.current, {
+      //   data: frames[0].data,
+      //   layout,
+      // });
+      // Plotly.addFrames(graphDiv.current, frames);
+      // Plotly.animate(graphDiv.current, null, {
+      //   transition: {
+      //     duration: 100,
+      //     easing: 'linear',
+      //   },
+      //   frame: {
+      //     duration: 100,
+      //     redraw: false,
+      //   },
+      // });
+      // setTimeout(() => {
+      //   console.log('stop');
+      //   Plotly.animate(graphDiv.current, [], { mode: 'next' });
+      // }, 2000);
+      setChartData(frames[0].data);
+      setChartLayout(layout);
+      setChartFrames(frames);
+      setChartRevision((prevRev) => prevRev + 1);
+      setDataLoaded(true);
+      //  Plotly.animate(graphDiv.current, null, {
+      // //   transition: {
+      // //     duration: 100,
+      // //     easing: 'linear',
+      // //   },
+      // //   frame: {
+      // //     duration: 100,
+      // //     redraw: false,
+      // //   },
+      // // });
     })();
-  }, []);
+  }, [plotlyDiv]);
 
-  // useEffect(() => {
-  //   if (!graphDiv.current) return;
-  //   var data = [
-  //     {
-  //       x: [1999, 2000, 2001, 2002],
-  //       y: [10, 15, 13, 17],
-  //       type: 'scatter',
-  //     },
-  //   ];
-  //   var layout = {
-  //     title: 'Sales Growth',
-  //     xaxis: {
-  //       title: 'Year',
-  //       showgrid: false,
-  //       zeroline: false,
-  //     },
-  //     yaxis: {
-  //       title: 'Percent',
-  //       showline: false,
-  //     },
-  //   };
-  //   Plotly.newPlot(graphDiv.current, data, layout);
-  // }, [graphDiv]);
+  useEffect(() => {
+    if (!dataLoaded) return;
+    console.log('animating');
+    Plotly.animate(plotlyDiv, null, {
+      transition: {
+        duration: 100,
+        easing: 'linear',
+      },
+      frame: {
+        duration: 100,
+        redraw: false,
+      },
+    });
+  }, [plotlyDiv, dataLoaded]);
+
   return (
     <>
       <header>
         <h1>COVID-19 Growth in Italian Regions</h1>
         <h6>Simulation: day {day}</h6>
-        {/* <Chart data={data} layout={layout} revision={revision} frames={frames} /> */}
-        <div ref={graphDiv} />
-        <Slider step={1} min={1} max={10} value={day} onChange={setDay} />
       </header>
+      <main>
+        <Plot
+          data={chartData}
+          layout={chartLayout}
+          frames={chartFrames}
+          revision={chartRevision}
+          useResizeHandler={true}
+          onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+          style={{ width: '100%' }}
+        />
+        <Slider step={1} min={1} max={10} value={day} onChange={setDay} />
+      </main>
     </>
   );
 };
