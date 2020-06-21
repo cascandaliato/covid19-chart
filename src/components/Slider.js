@@ -10,6 +10,7 @@ export default ({ min, max, step, value, onChange }) => {
         step={step}
         value={value}
         onChange={(e) => onChange(+e.target.value)}
+        style={{ width: '100%' }}
       />
     </div>
   );

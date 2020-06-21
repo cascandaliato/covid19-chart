@@ -1,10 +1,12 @@
 import times from 'lodash/times';
 import Plotly from 'plotly.js-basic-dist';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import createPlotlyComponent from 'react-plotly.js/factory';
 import Slider from './components/Slider';
 
 const Plot = createPlotlyComponent(Plotly);
+
+let throttle = false;
 
 export default () => {
   const [day, setDay] = useState(1);
@@ -17,6 +19,7 @@ export default () => {
   const [chartFrames, setChartFrames] = useState([]);
   const [chartRevision, setChartRevision] = useState(0);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [numDays, setNumDays] = useState(1);
 
   useEffect(() => {
     if (!plotlyDiv) return;
@@ -39,18 +42,19 @@ export default () => {
         byRegion[region] = regionData;
         return byRegion;
       }, {});
-      // const byRegionDate = data.reduce(
-      //   (m, { denominazione_regione: r, data: d, totale_casi: totalCases }) => ({
-      //     ...m,
-      //     [r]: { ...m[r], [Date.parse(d)]: { totalCases } },
-      //   }),
-      //   {},
-      // );
+      const byRegionDate = data.reduce(
+        (m, { denominazione_regione: r, data: d, totale_casi: totalCases }) => ({
+          ...m,
+          [r]: { ...m[r], [Date.parse(d)]: { totalCases } },
+        }),
+        {},
+      );
 
       // const regions = Object.keys(byRegionDate);
-      // const dates = Array.from(
-      //   new Set(Object.keys(byRegionDate).flatMap((r) => Object.keys(byRegionDate[r]))),
-      // ).sort((a, b) => a - b);
+      const dates = Array.from(
+        new Set(Object.keys(byRegionDate).flatMap((r) => Object.keys(byRegionDate[r]))),
+      ).sort((a, b) => a - b);
+      setNumDays(dates.length - 7);
 
       const traces = [];
       for (const [region, data] of Object.entries(byRegion)) {
@@ -200,6 +204,30 @@ export default () => {
     });
   }, [plotlyDiv, dataLoaded]);
 
+  const handleSliderChange = useCallback(
+    (day) => {
+      setDay(day);
+      // Plotly.animate(plotlyDiv, [], { mode: 'next' });
+
+      if (throttle) return;
+
+      Plotly.animate(plotlyDiv, [`frame${day}`], {
+        mode: 'next',
+        transition: {
+          duration: 0,
+          easing: 'linear',
+        },
+        frame: {
+          duration: 0,
+          redraw: false,
+        },
+      });
+      throttle = true;
+      setTimeout(() => (throttle = false), 10);
+    },
+    [plotlyDiv],
+  );
+
   return (
     <>
       <header>
@@ -214,9 +242,10 @@ export default () => {
           revision={chartRevision}
           useResizeHandler={true}
           onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+          onAnimatingFrame={({ name }) => setDay(Number(name.replace('frame', '')))}
           style={{ width: '100%' }}
         />
-        <Slider step={1} min={1} max={10} value={day} onChange={setDay} />
+        <Slider step={1} min={1} max={numDays} value={day} onChange={handleSliderChange} />
       </main>
     </>
   );
