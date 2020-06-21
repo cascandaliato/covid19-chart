@@ -2,7 +2,7 @@ import React from 'react';
 
 export default ({ min, max, step, value, onChange }) => {
   return (
-    <>
+    <div>
       <input
         type="range"
         min={min}
@@ -11,6 +11,6 @@ export default ({ min, max, step, value, onChange }) => {
         value={value}
         onChange={(e) => onChange(+e.target.value)}
       />
-    </>
+    </div>
   );
 };
