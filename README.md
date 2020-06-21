@@ -1,3 +1,7 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/casca/covid19-chart-react)
+
+[![Deployed to GitHub Pages](https://github.com/casca/covid19-chart-react/workflows/Build%20and%20Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/casca/covid19-chart-react)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
