@@ -20,6 +20,7 @@ export default () => {
   const [chartRevision, setChartRevision] = useState(0);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [numDays, setNumDays] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     if (!plotlyDiv) return;
@@ -211,7 +212,8 @@ export default () => {
 
       if (throttle) return;
 
-      Plotly.animate(plotlyDiv, [`frame${day}`], {
+      const frames = isPlaying ? chartFrames.map((f) => f.name).slice(day - 1) : [`frame${day}`];
+      Plotly.animate(plotlyDiv, frames, {
         mode: 'next',
         transition: {
           duration: 0,
@@ -225,8 +227,28 @@ export default () => {
       throttle = true;
       setTimeout(() => (throttle = false), 10);
     },
-    [plotlyDiv],
+    [plotlyDiv, chartFrames, isPlaying],
   );
+
+  const playPause = () => {
+    if (isPlaying) {
+      Plotly.animate(plotlyDiv, [], { mode: 'next' });
+    } else {
+      const frames = chartFrames.map((f) => f.name).slice(day - 1);
+      Plotly.animate(plotlyDiv, frames, {
+        mode: 'immediate',
+        transition: {
+          duration: 100,
+          easing: 'linear',
+        },
+        frame: {
+          duration: 100,
+          redraw: false,
+        },
+      });
+    }
+    setIsPlaying((curr) => !curr);
+  };
 
   return (
     <>
@@ -245,6 +267,7 @@ export default () => {
           onAnimatingFrame={({ name }) => setDay(Number(name.replace('frame', '')))}
           style={{ width: '100%' }}
         />
+        <button onClick={playPause}>{isPlaying ? 'Pause' : 'Play'}</button>
         <Slider step={1} min={1} max={numDays} value={day} onChange={handleSliderChange} />
       </main>
     </>
