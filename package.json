@@ -1,5 +1,6 @@
 {
   "name": "covid19-chart-react",
+  "homepage": "https://casca.dev/covid",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -21,8 +22,10 @@
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "npx move-file-cli build covid && npx move-file-cli covid build/covid",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "local": "vercel env pull .env.development.local -y && vercel dev --local-config vercel.dev.json"
   },
   "eslintConfig": {
     "extends": "react-app"
