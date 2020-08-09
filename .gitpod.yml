@@ -3,7 +3,7 @@ image:
 
 tasks:
   - init: yarn install
-    command: vercel env pull .env.development.local -y --token $VERCEL_TOKEN && vercel dev --local-config vercel.dev.json --token $VERCEL_TOKEN
+    command: vercel dev --token $VERCEL_TOKEN
     name: vercel dev
 
 ports:

@@ -25,7 +25,7 @@
     "postbuild": "npx move-file-cli build covid && npx move-file-cli covid build/covid",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "local": "vercel env pull .env.development.local -y && vercel dev --local-config vercel.dev.json"
+    "local": "vercel dev"
   },
   "eslintConfig": {
     "extends": "react-app"
