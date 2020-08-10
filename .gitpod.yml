@@ -16,8 +16,8 @@ github:
     branches: true
     pullRequests: true
     addCheck: true
-    addComment: false
-    addBadge: true
+    addComment: true
+    addBadge: false
 
 vscode:
   extensions:
