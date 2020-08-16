@@ -4,7 +4,7 @@ image:
 tasks:
   - init: yarn install
     command: vercel dev --token $VERCEL_TOKEN
-    name: vercel dev1
+    name: vercel dev
 
 ports:
   - port: 3000
