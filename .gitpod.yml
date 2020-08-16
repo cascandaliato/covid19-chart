@@ -4,7 +4,7 @@ image:
 tasks:
   - init: yarn install
     command: vercel dev --token $VERCEL_TOKEN
-    name: vercel dev
+    name: vercel dev1
 
 ports:
   - port: 3000
@@ -23,3 +23,10 @@ vscode:
   extensions:
     - msjsdiag.debugger-for-chrome@4.12.6:IdQBlCQEnixzHAOkHC36ew==
     - esbenp.prettier-vscode@5.1.0:M3Ww4EayZWhGCgk49C1Ldw==
+    - dsznajder.es7-react-js-snippets@2.8.2:5IIte/QrlqFNONG3BmIj5w==
+    - eamodio.gitlens@10.2.2:sHZo41prELczhieEg6YOAA==
+    - christian-kohler.npm-intellisense@1.3.0:yQtCdwoyo890Bn9NOEuEDA==
+    - VisualStudioExptTeam.vscodeintellicode@1.2.9:LdmiMXKN8640kj+gwklZLA==
+    - christian-kohler.path-intellisense@2.2.1:GUYwBShcwzd1CP4d0YhMmA==
+    - donjayamanne.githistory@0.6.9:kEtcb1vuOYtwes23IzrMGQ==
+    - SonarSource.sonarlint-vscode@1.17.0:ykgEHpHsIPlCEJ+/QYVcrw==
