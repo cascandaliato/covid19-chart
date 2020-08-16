@@ -1,0 +1,38 @@
+name: Lighthouse Audit
+
+on: deployment_status
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
+        uses: actions/checkout@v2
+        with:
+          repository: 'casca/lighthouse-reports'
+          ref: master
+          persist-credentials: false
+      - name: Audit URLs using Lighthouse 💡🏡
+        id: LHCIAction
+        if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
+        uses: treosh/lighthouse-ci-action@v3
+        with:
+          urls: 'https://casca.dev/covid'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+      - run: cp ${{steps.LHCIAction.outputs.resultsPath}}/lhr*.json $GITHUB_WORKSPACE/casca.dev-covid.json
+        if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
+      - name: Commit files
+        if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
+        run: |
+          git config --local user.name "casca"
+          git config --local user.email "8927157+casca@users.noreply.github.com"
+          git add casca.dev-covid.json
+          git commit -m "Update lighthouse report for casca.dev/covid"
+      - name: Push changes
+        if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
+        uses: ad-m/github-push-action@master
+        with:
+          repository: 'casca/lighthouse-reports'
+          github_token: ${{ secrets.PUSH_TOKEN }}
