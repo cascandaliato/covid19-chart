@@ -1,0 +1,35 @@
+name: Weekly Lighthouse Audit
+
+on:
+  schedule:
+    - cron: '0 21 * * 4'
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          repository: 'casca/lighthouse-reports'
+          ref: master
+          persist-credentials: false
+      - name: Audit URLs using Lighthouse 💡🏡
+        id: LHCIAction
+        uses: treosh/lighthouse-ci-action@v3
+        with:
+          urls: 'https://casca.dev/goto'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+      - run: cp ${{steps.LHCIAction.outputs.resultsPath}}/lhr*.json $GITHUB_WORKSPACE/casca.dev-goto.json
+      - name: Commit files
+        run: |
+          git config --local user.name "casca"
+          git config --local user.email "8927157+casca@users.noreply.github.com"
+          git add casca.dev-goto.json
+          git commit -m "Update lighthouse report for casca.dev/goto"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          repository: 'casca/lighthouse-reports'
+          github_token: ${{ secrets.PUSH_TOKEN }}
