@@ -31,8 +31,19 @@ export default (traces, regions) => {
         size: 3,
       },
     }));
+    const expontialGrowth = {
+      x: [1, 100000],
+      y: [1, 100000],
+      line: {
+        color: 'fuchsia',
+        width: 1,
+        shape: 'spline',
+      },
+      mode: 'lines',
+      type: 'scatter',
+    };
     frames.push({
-      data: [...lines, ...dots],
+      data: [...lines, ...dots, expontialGrowth],
       name: `frame${i}`,
       layout: frameLayout,
     });
