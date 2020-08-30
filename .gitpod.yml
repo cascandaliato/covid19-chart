@@ -1,9 +1,6 @@
-image:
-  file: .gitpod.Dockerfile
-
 tasks:
   - init: yarn install
-    command: vercel dev --token $VERCEL_TOKEN
+    command: npx vercel dev --token $VERCEL_TOKEN
     name: vercel dev
 
 ports:
