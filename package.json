@@ -8,8 +8,10 @@
     "plotly.js-basic-dist": "^1.54.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-jss": "^10.4.0",
     "react-plotly.js": "^2.4.0",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "react-transition-group": "^4.4.1"
   },
   "scripts": {
     "predeploy": "yarn build",
@@ -34,5 +36,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "vercel": "^20.1.0"
   }
 }
