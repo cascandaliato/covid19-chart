@@ -63,7 +63,8 @@ export default () => {
 
     setStartingDay(1);
     setNumDays(dates.length);
-    setDelayMs(Math.floor(15000 / dates.length));
+    // setDelayMs(Math.floor(15000 / dates.length));
+    setDelayMs(100);
 
     setFrames(
       getFrames(getTraces(byRegionAndDate), regions).map((f) => ({
