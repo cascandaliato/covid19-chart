@@ -36,14 +36,19 @@ export default () => {
 
   const [plotlyDiv, setPlotlyDiv] = useState(null);
   const [frames, setFrames] = useState([{ data: [], layout: {} }]);
-  const [{ traces, layout, revision }, setChartData] = useState({
-    traces: [],
-    layout: {
-      responsive: true,
-      autosize: true,
-    },
-    revision: 0,
+  // const [{ traces, layout }, setChartData] = useState({
+  //   traces: [],
+  //   layout: {
+  //     responsive: true,
+  //     autosize: true,
+  //   },
+  // });
+  const [traces, setTraces] = useState([]);
+  const [layout, setLayout] = useState({
+    responsive: true,
+    autosize: true,
   });
+  const [revision, setRevision] = useState(0);
 
   // const [figure, setFigure] = useState({
   //   data: [],
@@ -79,12 +84,13 @@ export default () => {
   ]);
 
   useEffect(() => {
-    console.log({ frames });
-    setChartData({
-      traces: frames[0].data,
-      layout: frames[0].layout,
-      revision: 1,
-    });
+    // setChartData({
+    //   traces: frames[0].data,
+    //   layout: frames[0].layout,
+    // });
+    setTraces(frames[0].data);
+    setLayout(frames[0].layout);
+    setRevision((r) => r + 1);
     if (frames.length > 1) setChartReady(true);
   }, [frames]);
 
@@ -93,12 +99,15 @@ export default () => {
   }, [pageReady, play]);
 
   const updateChart = useCallback(
-    (day) =>
-      setChartData(({ revision: prevRevision }) => ({
-        traces: frames[day - 1].data,
-        layout: frames[day - 1].layout,
-        revision: prevRevision + 1,
-      })),
+    (day) => {
+      // setChartData(({ revision: prevRevision }) => ({
+      //   traces: frames[day - 1].data,
+      //   layout: frames[day - 1].layout,
+      // }));
+      setTraces(frames[day - 1].data);
+      setLayout(frames[day - 1].layout);
+      setRevision((r) => r + 1);
+    },
     [frames],
   );
 
