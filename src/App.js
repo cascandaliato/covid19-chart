@@ -5,35 +5,50 @@ import './App.css';
 import OverlaySpinner from './components/OverlaySpinner';
 import Slider from './components/Slider';
 import getFrames from './helpers/getFrames';
-import getLayout from './helpers/getLayout';
+import getBaseLayout from './helpers/getBaseLayout';
 import getTraces from './helpers/getTraces';
 import useCovidData from './hooks/useCovidData';
+import useAutoCounter from './hooks/useAutoCounter';
 
 const DELTA_DAYS = 7;
 
 const Plot = createPlotlyComponent(Plotly);
 
-let throttle = false;
+// let throttle = false;
+
+const baseLayout = getBaseLayout();
 
 export default () => {
+  const {
+    count: currentDay,
+    setCount: setCurrentDay,
+    setMin: setStartingDay,
+    max: numDays,
+    setMax: setNumDays,
+    setDelayMs,
+    playing,
+    play,
+    pause,
+  } = useAutoCounter();
   const { byRegionAndDate, regions, dates, loading: loadingRawData } = useCovidData(DELTA_DAYS);
   const [chartReady, setChartReady] = useState(false);
   const [pageReady, setPageReady] = useState(false);
 
-  const [currentDay, setCurrentDay] = useState(1);
-  const [numDays, setNumDays] = useState(1);
-
   const [plotlyDiv, setPlotlyDiv] = useState(null);
-  const [chartData, setChartData] = useState([{}]);
-  const [chartLayout, setChartLayout] = useState({
+  const [frames, setFrames] = useState([{ data: [], layout: {} }]);
+  // const [{ traces, layout }, setChartData] = useState({
+  //   traces: [],
+  //   layout: {
+  //     responsive: true,
+  //     autosize: true,
+  //   },
+  // });
+  const [traces, setTraces] = useState([]);
+  const [layout, setLayout] = useState({
     responsive: true,
     autosize: true,
   });
-  const [chartFrames, setChartFrames] = useState([]);
-  const [chartRevision, setChartRevision] = useState(0);
-
-  const [timer, setTimer] = useState(null);
-  const [paused, setPaused] = useState(false);
+  const [revision, setRevision] = useState(0);
 
   // const [figure, setFigure] = useState({
   //   data: [],
@@ -42,75 +57,64 @@ export default () => {
   //   config: {},
   // });
 
-  const resumeTimer = useCallback(() => {
-    const t = setTimeout(() => {
-      setCurrentDay((day) => Math.min(day + 1, numDays));
-    }, Math.floor(15000 / numDays));
-    setTimer(t);
-    return t;
-  }, [numDays]);
+  // create chart
+  useEffect(() => {
+    if (loadingRawData || chartReady || !plotlyDiv) return;
 
-  const stopTimer = () => {
-    if (!timer) return;
+    setStartingDay(1);
+    setNumDays(dates.length);
+    // setDelayMs(Math.floor(15000 / dates.length));
+    setDelayMs(100);
 
-    clearTimeout(timer);
-    setTimer(null);
-  };
+    setFrames(
+      getFrames(getTraces(byRegionAndDate), regions).map((f) => ({
+        ...f,
+        layout: { ...baseLayout, ...f.layout },
+      })),
+    );
+  }, [
+    byRegionAndDate,
+    regions,
+    dates,
+    loadingRawData,
+    plotlyDiv,
+    setStartingDay,
+    setNumDays,
+    setDelayMs,
+    chartReady,
+  ]);
+
+  useEffect(() => {
+    // setChartData({
+    //   traces: frames[0].data,
+    //   layout: frames[0].layout,
+    // });
+    setTraces(frames[0].data);
+    setLayout(frames[0].layout);
+    setRevision((r) => r + 1);
+    if (frames.length > 1) setChartReady(true);
+  }, [frames]);
+
+  useEffect(() => {
+    if (pageReady) play();
+  }, [pageReady, play]);
 
   const updateChart = useCallback(
     (day) => {
-      setChartData(chartFrames[day - 1].data);
-      setChartLayout((layout) => ({ ...layout, ...chartFrames[day - 1].layout }));
-      setChartRevision((rev) => rev + 1);
+      // setChartData(({ revision: prevRevision }) => ({
+      //   traces: frames[day - 1].data,
+      //   layout: frames[day - 1].layout,
+      // }));
+      setTraces(frames[day - 1].data);
+      setLayout(frames[day - 1].layout);
+      setRevision((r) => r + 1);
     },
-    [chartFrames],
+    [frames],
   );
 
-  // create chart
   useEffect(() => {
-    if (loadingRawData || !plotlyDiv) return;
-
-    const traces = getTraces(byRegionAndDate);
-    const frames = getFrames(traces, regions);
-    const layout = { ...getLayout(), ...frames[0].layout };
-
-    setNumDays(dates.length);
-    setChartData(traces);
-    setChartLayout(layout);
-    setChartFrames(frames);
-
-    setChartReady(true);
-  }, [byRegionAndDate, regions, dates, loadingRawData, plotlyDiv]);
-
-  useEffect(() => {
-    if (!pageReady || paused) return;
-    const t = resumeTimer();
-    return () => clearTimeout(t);
-  }, [pageReady, currentDay, resumeTimer, paused]);
-
-  useEffect(() => {
-    if (!pageReady) return;
-    updateChart(currentDay);
-  }, [pageReady, currentDay, updateChart]);
-
-  const handleSliderChange = useCallback((day) => {
-    setCurrentDay(day);
-
-    if (throttle) return;
-    throttle = true;
-    setTimeout(() => (throttle = false), 20);
-  }, []);
-
-  const playPause = () => {
-    if (paused) {
-      setPaused(false);
-      setCurrentDay((day) => Math.min(day + 1, numDays));
-      resumeTimer();
-    } else {
-      setPaused(true);
-      stopTimer();
-    }
-  };
+    if (pageReady) updateChart(currentDay);
+  }, [currentDay, pageReady, updateChart]);
 
   return (
     <div
@@ -155,9 +159,9 @@ export default () => {
             }}
           >
             <Plot
-              data={chartData}
-              layout={chartLayout}
-              revision={chartRevision}
+              data={traces}
+              layout={layout}
+              revision={revision}
               useResizeHandler={true}
               onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
               // onUpdate={setFigure}
@@ -171,14 +175,8 @@ export default () => {
                 width: '100%',
               }}
             >
-              <button onClick={playPause}>{timer ? 'Pause' : 'Play'}</button>
-              <Slider
-                step={1}
-                min={1}
-                max={numDays}
-                value={currentDay}
-                onChange={handleSliderChange}
-              />
+              <button onClick={playing ? pause : play}>{playing ? 'Pause' : 'Play'}</button>
+              <Slider step={1} min={1} max={numDays} value={currentDay} onChange={setCurrentDay} />
             </div>
           </div>
         </OverlaySpinner>

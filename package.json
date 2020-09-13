@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "move-file-cli": "^2.0.0",
     "vercel": "^20.1.0"
   }
 }
