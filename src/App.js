@@ -9,6 +9,7 @@ import getBaseLayout from './helpers/getBaseLayout';
 import getTraces from './helpers/getTraces';
 import useCovidData from './hooks/useCovidData';
 import useAutoCounter from './hooks/useAutoCounter';
+import dayjs from 'dayjs';
 
 const DELTA_DAYS = 7;
 
@@ -64,7 +65,7 @@ export default () => {
     setStartingDay(1);
     setNumDays(dates.length);
     // setDelayMs(Math.floor(15000 / dates.length));
-    setDelayMs(100);
+    setDelayMs(50);
 
     setFrames(
       getFrames(getTraces(byRegionAndDate), regions).map((f) => ({
@@ -130,7 +131,7 @@ export default () => {
     >
       <header>
         <h1>COVID-19 Growth in Italian Regions</h1>
-        <h6>Simulation: day {currentDay}</h6>
+        <h6>Simulation: {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}</h6>
       </header>
       <main
         style={{
@@ -165,6 +166,7 @@ export default () => {
               useResizeHandler={true}
               onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
               // onUpdate={setFigure}
+              onHover={(e) => console.log(e)}
               style={{ width: '100%' }}
             />
             <div
