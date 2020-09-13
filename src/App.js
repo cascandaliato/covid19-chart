@@ -60,7 +60,12 @@ export default () => {
     setNumDays(dates.length);
     setDelayMs(Math.floor(15000 / dates.length));
 
-    setFrames(getFrames(getTraces(byRegionAndDate), regions));
+    setFrames(
+      getFrames(getTraces(byRegionAndDate), regions).map((f) => ({
+        ...f,
+        layout: { ...baseLayout, ...f.layout },
+      })),
+    );
   }, [
     byRegionAndDate,
     regions,
@@ -74,9 +79,10 @@ export default () => {
   ]);
 
   useEffect(() => {
+    console.log({ frames });
     setChartData({
       traces: frames[0].data,
-      layout: { ...baseLayout, ...frames[0].layout },
+      layout: frames[0].layout,
       revision: 1,
     });
     if (frames.length > 1) setChartReady(true);
@@ -88,10 +94,10 @@ export default () => {
 
   const updateChart = useCallback(
     (day) =>
-      setChartData(({ layout: l, revision: r }) => ({
+      setChartData(({ revision: prevRevision }) => ({
         traces: frames[day - 1].data,
-        layout: { ...baseLayout, ...frames[day - 1].layout },
-        revision: r + 1,
+        layout: frames[day - 1].layout,
+        revision: prevRevision + 1,
       })),
     [frames],
   );
