@@ -1,23 +1,23 @@
+import dayjs from 'dayjs';
 import Plotly from 'plotly.js-basic-dist';
 import React, { useCallback, useEffect, useState } from 'react';
 import createPlotlyComponent from 'react-plotly.js/factory';
 import './App.css';
+import Footer from './components/Footer';
 import OverlaySpinner from './components/OverlaySpinner';
 import Slider from './components/Slider';
-import getFrames from './helpers/getFrames';
+import getAngle from './helpers/getAngle';
 import getBaseLayout from './helpers/getBaseLayout';
+import getFrames from './helpers/getFrames';
 import getTraces from './helpers/getTraces';
-import useCovidData from './hooks/useCovidData';
 import useAutoCounter from './hooks/useAutoCounter';
-import dayjs from 'dayjs';
+import useCovidData from './hooks/useCovidData';
 
 const DELTA_DAYS = 7;
 
 const Plot = createPlotlyComponent(Plotly);
 
 // let throttle = false;
-
-const baseLayout = getBaseLayout();
 
 export default () => {
   const {
@@ -37,13 +37,6 @@ export default () => {
 
   const [plotlyDiv, setPlotlyDiv] = useState(null);
   const [frames, setFrames] = useState([{ data: [], layout: {} }]);
-  // const [{ traces, layout }, setChartData] = useState({
-  //   traces: [],
-  //   layout: {
-  //     responsive: true,
-  //     autosize: true,
-  //   },
-  // });
   const [traces, setTraces] = useState([]);
   const [layout, setLayout] = useState({
     responsive: true,
@@ -51,24 +44,18 @@ export default () => {
   });
   const [revision, setRevision] = useState(0);
 
-  // const [figure, setFigure] = useState({
-  //   data: [],
-  //   layout: getLayout(),
-  //   frames: [],
-  //   config: {},
-  // });
-
   // create chart
   useEffect(() => {
-    if (loadingRawData || chartReady || !plotlyDiv) return;
+    if (loadingRawData || !plotlyDiv) return;
 
     setStartingDay(1);
     setNumDays(dates.length);
     // setDelayMs(Math.floor(15000 / dates.length));
     setDelayMs(50);
 
+    const baseLayout = getBaseLayout(byRegionAndDate);
     setFrames(
-      getFrames(getTraces(byRegionAndDate), regions).map((f) => ({
+      getFrames(getTraces(byRegionAndDate, dates), regions).map((f) => ({
         ...f,
         layout: { ...baseLayout, ...f.layout },
       })),
@@ -82,30 +69,37 @@ export default () => {
     setStartingDay,
     setNumDays,
     setDelayMs,
-    chartReady,
   ]);
 
   useEffect(() => {
-    // setChartData({
-    //   traces: frames[0].data,
-    //   layout: frames[0].layout,
-    // });
+    if (chartReady) return;
     setTraces(frames[0].data);
     setLayout(frames[0].layout);
     setRevision((r) => r + 1);
     if (frames.length > 1) setChartReady(true);
-  }, [frames]);
+  }, [frames, chartReady]);
+
+  const adjustAnnotationAngle = useCallback(() => {
+    if (!chartReady) return;
+    setFrames((oldFrames) => {
+      const newFrames = [...oldFrames];
+      newFrames.forEach((frame) => {
+        frame.layout.annotations[0].visible = true;
+        frame.layout.annotations[0].textangle = getAngle();
+      });
+      return newFrames;
+    });
+  }, [chartReady]);
 
   useEffect(() => {
-    if (pageReady) play();
-  }, [pageReady, play]);
+    if (pageReady) {
+      adjustAnnotationAngle();
+      play();
+    }
+  }, [pageReady, play, adjustAnnotationAngle]);
 
   const updateChart = useCallback(
     (day) => {
-      // setChartData(({ revision: prevRevision }) => ({
-      //   traces: frames[day - 1].data,
-      //   layout: frames[day - 1].layout,
-      // }));
       setTraces(frames[day - 1].data);
       setLayout(frames[day - 1].layout);
       setRevision((r) => r + 1);
@@ -116,6 +110,20 @@ export default () => {
   useEffect(() => {
     if (pageReady) updateChart(currentDay);
   }, [currentDay, pageReady, updateChart]);
+
+  const handleHover = (color, width) => (e) => {
+    const regionsIdx = e.points.reduce((r, p) => [...r, p.curveNumber], []);
+    setFrames((oldFrames) => {
+      const newFrames = [...oldFrames];
+      newFrames.forEach(({ data }) =>
+        regionsIdx.forEach((idx) => {
+          data[idx].line.color = color;
+          data[idx].line.width = width;
+        }),
+      );
+      return newFrames;
+    });
+  };
 
   return (
     <div
@@ -129,9 +137,18 @@ export default () => {
         height: '100vh',
       }}
     >
-      <header>
+      <header
+        style={{
+          flexDirection: 'column',
+          flexWrap: 'nowrap',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <h1>COVID-19 Growth in Italian Regions</h1>
-        <h6>Simulation: {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}</h6>
+        <p>Some text here</p>
+        <p>Some more text here</p>
       </header>
       <main
         style={{
@@ -166,8 +183,12 @@ export default () => {
               useResizeHandler={true}
               onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
               // onUpdate={setFigure}
-              onHover={(e) => console.log(e)}
+              onHover={handleHover('fuchsia', 2)}
+              onUnhover={handleHover('gray', 0.5)}
+              onRelayouting={() => console.log('onRelayouting')}
+              onRelayout={adjustAnnotationAngle}
               style={{ width: '100%' }}
+              config={{ modeBarButtons: [[]], displaylogo: false }}
             />
             <div
               style={{
@@ -178,11 +199,13 @@ export default () => {
               }}
             >
               <button onClick={playing ? pause : play}>{playing ? 'Pause' : 'Play'}</button>
+              {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}
               <Slider step={1} min={1} max={numDays} value={currentDay} onChange={setCurrentDay} />
             </div>
           </div>
         </OverlaySpinner>
       </main>
+      <Footer />
     </div>
   );
 };

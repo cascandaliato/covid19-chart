@@ -80,11 +80,19 @@ const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOp
         {/* https://projects.lukehaas.me/css-loaders/ */}
         {/* <div className="loader" /> */}
         {/* https://tobiasahlin.com/spinkit/ */}
-        <div className="sk-folding-cube">
-          <div className="sk-cube1 sk-cube"></div>
-          <div className="sk-cube2 sk-cube"></div>
-          <div className="sk-cube4 sk-cube"></div>
-          <div className="sk-cube3 sk-cube"></div>
+        <div className="sk-circle">
+          <div className="sk-circle1 sk-child"></div>
+          <div className="sk-circle2 sk-child"></div>
+          <div className="sk-circle3 sk-child"></div>
+          <div className="sk-circle4 sk-child"></div>
+          <div className="sk-circle5 sk-child"></div>
+          <div className="sk-circle6 sk-child"></div>
+          <div className="sk-circle7 sk-child"></div>
+          <div className="sk-circle8 sk-child"></div>
+          <div className="sk-circle9 sk-child"></div>
+          <div className="sk-circle10 sk-child"></div>
+          <div className="sk-circle11 sk-child"></div>
+          <div className="sk-circle12 sk-child"></div>
         </div>
         {/* <div className="loadingio-spinner-wedges-4txtq1mnnm9">
           <div className="ldio-koe2ptwtho">

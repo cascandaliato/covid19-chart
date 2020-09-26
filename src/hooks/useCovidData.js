@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import bind from 'lodash/bind';
 import drop from 'lodash/fp/drop';
 import flow from 'lodash/fp/flow';
@@ -33,9 +34,6 @@ const mapPropValue = (propName, mapFn) => (obj) => ({
 
 const withMinimum = (minimum) => (val) => Math.max(minimum, val);
 
-// const customGroupBy = (key) => flow(groupBy(key), mapValues(map(pickByKey(negate(eq(key))))));
-// const customKeyBy = (key) => flow(keyBy(key), mapValues(pickByKey(negate(eq(key)))));
-
 export default (daysDelay = 1) => {
   const [covidData, setCovidData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,18 +55,19 @@ export default (daysDelay = 1) => {
       )(rawData);
 
       const origDates = flow(map('date'), uniq, sortBy(identity))(data);
-      const dates = drop(daysDelay)(origDates);
+      const dates = flow(
+        drop(daysDelay),
+        map((d) => dayjs(d).format('MMMM D YYYY')),
+      )(origDates);
       const regions = flow(map('region'), sortBy(identity), sortedUniq)(data);
 
-      // const filteredData = filter(({ date }) => dates.includes(date))(rawDataEn);
-
       let byRegionAndDate = flow(groupBy('region'), mapValues(keyBy('date')))(data);
-
       const calcNewCases = ({ region, date, totalCases }) =>
         totalCases - byRegionAndDate[region][origDates[indexOf(origDates, date) - 7]].totalCases;
 
       byRegionAndDate = mapValues(
         flow(
+          mapKeys((d) => dayjs(d).format('MMMM D YYYY')),
           pickByKey(bind(dates.includes, dates)),
           mapValues(
             flow(
@@ -78,21 +77,6 @@ export default (daysDelay = 1) => {
           ),
         ),
       )(byRegionAndDate);
-
-      // const byRegion = groupBy('region')(filteredData);
-      // const byRegionAndDate = mapValues(keyBy('date'))(byRegion);
-
-      // const byDate = groupBy('date')(filteredData);
-      // const byDateAndRegion = mapValues(keyBy('region'))(byDate);
-
-      // console.log({
-      //   regionsListIsStable: regionsListIsStable(regions)(byDateAndRegion),
-      //   datesListIsStable: datesListIsStable(dates)(byRegionAndDate),
-      //   totalCasesIsAlwaysPositive: quantityIsAlwaysPositive('totalCases')(byRegionAndDate),
-      //   newCasesIsAlwaysPositive: quantityIsAlwaysPositive('newCases')(byRegionAndDate),
-      // });
-      // console.log({ byDate, byDateAndRegion, byRegion, byRegionAndDate, regions, dates });
-
       setCovidData({ byRegionAndDate, regions, dates });
       setLoading(false);
     })();
