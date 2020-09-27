@@ -12,7 +12,7 @@ const getFrames = (traces, regions) => {
           yshift: 12,
           text: 'Cases double every week on this line',
           showarrow: false,
-          font: { size: 14, color: 'gray' },
+          font: { size: 14, color: '#2d3748' },
           visible: false,
           textangle: 0,
         },
@@ -42,7 +42,7 @@ const getFrames = (traces, regions) => {
       y: [t.y[i - 1]],
       mode: 'markers',
       marker: {
-        color: 'fuchsia',
+        color: '#e53e3e',
         size: 4,
       },
     }));
@@ -50,7 +50,7 @@ const getFrames = (traces, regions) => {
       x: [1, 1000000],
       y: [1, 1000000],
       line: {
-        color: 'fuchsia',
+        color: '#e53e3e',
         width: 2,
         shape: 'spline',
         dash: 'dot',
