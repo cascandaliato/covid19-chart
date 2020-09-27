@@ -18,7 +18,7 @@ const getBaseLayout = (byRegionAndDate) => ({
     linecolor: 'rgb(224,224,224)',
     titlefont: {
       size: 24,
-      color: 'rgba(254, 52, 110,1)',
+      color: '#1a202c',
     },
     automargin: true,
   },
@@ -27,7 +27,7 @@ const getBaseLayout = (byRegionAndDate) => ({
     title: 'New confirmed cases<br>in the previous week',
     titlefont: {
       size: 24,
-      color: 'rgba(254, 52, 110,1)',
+      color: '#1a202c',
     },
     range: [0, Math.log10(100000)],
     fixedrange: true,
@@ -41,7 +41,12 @@ const getBaseLayout = (byRegionAndDate) => ({
   paper_bgcolor: 'rgba(255,255,255,0)',
   plot_bgcolor: 'rgba(255,255,255,0)',
   hovermode: 'closest',
-  hoverlabel: { bgcolor: 'white', font: { size: 16 } },
+  hoverlabel: { bgcolor: 'white', font: { size: 16, color: '#1a202c' } },
+  font: {
+    color: '#2d3748',
+    family:
+      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+  },
 });
 
 export default getBaseLayout;

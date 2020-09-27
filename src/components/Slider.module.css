@@ -1,0 +1,3 @@
+.slider *:last-child:empty:hover {
+  filter: brightness(130%);
+}

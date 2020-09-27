@@ -2,24 +2,31 @@ import dayjs from 'dayjs';
 import Plotly from 'plotly.js-basic-dist';
 import React, { useCallback, useEffect, useState } from 'react';
 import createPlotlyComponent from 'react-plotly.js/factory';
-import './App.css';
 import Footer from './components/Footer';
 import OverlaySpinner from './components/OverlaySpinner';
+import PlayPause from './components/PlayPause';
 import Slider from './components/Slider';
+import { inputControlColors } from './helpers/colors';
 import getAngle from './helpers/getAngle';
 import getBaseLayout from './helpers/getBaseLayout';
 import getFrames from './helpers/getFrames';
 import getTraces from './helpers/getTraces';
 import useAutoCounter from './hooks/useAutoCounter';
+import useBodyClasses from './hooks/useBodyClasses';
 import useCovidData from './hooks/useCovidData';
 
 const DELTA_DAYS = 7;
 
 const Plot = createPlotlyComponent(Plotly);
 
+const plotlyConfig = { modeBarButtons: [[]], displaylogo: false };
+
 // let throttle = false;
 
 export default () => {
+  // useBodyClasses('bg-gradient-to-b', 'from-white', 'via-gray-100', 'to-white');
+  // useBodyClasses('bg-gray-100');
+
   const {
     count: currentDay,
     setCount: setCurrentDay,
@@ -43,6 +50,7 @@ export default () => {
     autosize: true,
   });
   const [revision, setRevision] = useState(0);
+  const [hoveredTraces, setHoveredTraces] = useState(new Set());
 
   // create chart
   useEffect(() => {
@@ -100,33 +108,60 @@ export default () => {
 
   const updateChart = useCallback(
     (day) => {
-      setTraces(frames[day - 1].data);
+      const newTraces = frames[day - 1].data;
+      newTraces.forEach((trace, idx) => {
+        if (idx > regions.length) return;
+
+        if (hoveredTraces.has(idx)) {
+          trace.line.color = '#e53e3e';
+          trace.line.width = 2;
+        } else {
+          trace.line.color = 'gray';
+          trace.line.width = 0.5;
+        }
+      });
+      setTraces(newTraces);
       setLayout(frames[day - 1].layout);
       setRevision((r) => r + 1);
     },
-    [frames],
+    [frames, hoveredTraces, regions],
   );
+
+  useEffect(() => {
+    setTraces((oldTraces) => {
+      const newTraces = [...oldTraces];
+      newTraces.forEach((trace, idx) => {
+        if (idx > regions.length) return;
+
+        if (hoveredTraces.has(idx)) {
+          trace.line.color = '#e53e3e';
+          trace.line.width = 2;
+        } else {
+          trace.line.color = '#2d3748';
+          trace.line.width = 0.5;
+        }
+      });
+      return newTraces;
+    });
+  }, [hoveredTraces, regions]);
 
   useEffect(() => {
     if (pageReady) updateChart(currentDay);
   }, [currentDay, pageReady, updateChart]);
 
-  const handleHover = (color, width) => (e) => {
+  const handleHover = (e) => {
     const regionsIdx = e.points.reduce((r, p) => [...r, p.curveNumber], []);
-    setFrames((oldFrames) => {
-      const newFrames = [...oldFrames];
-      newFrames.forEach(({ data }) =>
-        regionsIdx.forEach((idx) => {
-          data[idx].line.color = color;
-          data[idx].line.width = width;
-        }),
-      );
-      return newFrames;
-    });
+    setHoveredTraces((t) => new Set([...t, ...regionsIdx]));
+  };
+
+  const handleUnhover = (e) => {
+    const regionsIdx = new Set(e.points.reduce((r, p) => [...r, p.curveNumber], []));
+    setHoveredTraces((t) => new Set([...t].filter((i) => !regionsIdx.has(i))));
   };
 
   return (
     <div
+      className="font-sans"
       style={{
         flexDirection: 'column',
         flexWrap: 'nowrap',
@@ -134,7 +169,7 @@ export default () => {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
       }}
     >
       <header
@@ -146,7 +181,7 @@ export default () => {
           alignItems: 'center',
         }}
       >
-        <h1>COVID-19 Growth in Italian Regions</h1>
+        <h1 className="font-bold text-3xl mt-4 text-red-600">COVID-19 Growth in Italian Regions</h1>
         <p>Some text here</p>
         <p>Some more text here</p>
       </header>
@@ -183,24 +218,45 @@ export default () => {
               useResizeHandler={true}
               onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
               // onUpdate={setFigure}
-              onHover={handleHover('fuchsia', 2)}
-              onUnhover={handleHover('gray', 0.5)}
-              onRelayouting={() => console.log('onRelayouting')}
+              onHover={handleHover}
+              onUnhover={handleUnhover}
               onRelayout={adjustAnnotationAngle}
               style={{ width: '100%' }}
-              config={{ modeBarButtons: [[]], displaylogo: false }}
+              config={plotlyConfig}
             />
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: '100%',
+                width: '80%',
               }}
+              className="mt-4"
             >
-              <button onClick={playing ? pause : play}>{playing ? 'Pause' : 'Play'}</button>
-              {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}
-              <Slider step={1} min={1} max={numDays} value={currentDay} onChange={setCurrentDay} />
+              <PlayPause onClick={playing ? pause : play} playing={playing} />
+              <span style={{ minWidth: '15rem' }} className="text-center text-2xl ">
+                {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}
+              </span>
+              <Slider
+                step={1}
+                min={0}
+                max={numDays - 2}
+                value={currentDay}
+                onChange={setCurrentDay}
+                styles={{
+                  track: {
+                    width: '100%',
+                  },
+                  active: {
+                    backgroundColor: inputControlColors,
+                  },
+                  thumb: {
+                    width: '1.5rem',
+                    height: '1.5rem',
+                    backgroundColor: inputControlColors,
+                  },
+                }}
+              />
             </div>
           </div>
         </OverlaySpinner>

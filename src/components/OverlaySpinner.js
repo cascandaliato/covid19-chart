@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { createUseStyles } from 'react-jss';
 import { CSSTransition } from 'react-transition-group';
+import './OverlaySpinner.css';
 
 const useFadeStyles = (initialOpacity, duration) =>
   createUseStyles({
@@ -77,8 +78,6 @@ const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOp
         unmountOnExit={true}
         visible={loading}
       >
-        {/* https://projects.lukehaas.me/css-loaders/ */}
-        {/* <div className="loader" /> */}
         {/* https://tobiasahlin.com/spinkit/ */}
         <div className="sk-circle">
           <div className="sk-circle1 sk-child"></div>
@@ -94,24 +93,6 @@ const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOp
           <div className="sk-circle11 sk-child"></div>
           <div className="sk-circle12 sk-child"></div>
         </div>
-        {/* <div className="loadingio-spinner-wedges-4txtq1mnnm9">
-          <div className="ldio-koe2ptwtho">
-            <div>
-              <div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </Fade>
       <Fade
         duration={duration}

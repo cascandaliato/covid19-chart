@@ -13,7 +13,7 @@ const traceTemplate = () => ({
   x: [],
   y: [],
   line: {
-    color: 'gray',
+    color: '#2d3748',
     width: 0.5,
     shape: 'spline',
   },
