@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { CSSTransition } from 'react-transition-group';
 import './OverlaySpinner.css';
 
-const useFadeStyles = (initialOpacity, duration) =>
+const useFadeStyles = (initialOpacity, duration, positionAbsolute) =>
   createUseStyles({
     enter: {
       opacity: initialOpacity,
@@ -23,9 +23,11 @@ const useFadeStyles = (initialOpacity, duration) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      position: 'absolute',
+      position: positionAbsolute ? 'absolute' : 'relative',
       width: '100%',
       height: '100%',
+      left: '0',
+      top: '0',
     },
   });
 
@@ -33,14 +35,22 @@ const useContainerStyles = createUseStyles({
   container: {
     position: 'relative',
     width: '100%',
-    height: '100%',
-    flexGrow: 1,
+    // height: '100%',
+    // flexGrow: 1,
   },
 });
 
-const Fade = ({ visible, duration, initialOpacity, children, onExited, unmountOnExit }) => {
+const Fade = ({
+  visible,
+  duration,
+  initialOpacity,
+  children,
+  onExited,
+  unmountOnExit,
+  positionAbsolute = true,
+}) => {
   const div = useRef(null);
-  const classes = useFadeStyles(initialOpacity, duration)();
+  const classes = useFadeStyles(initialOpacity, duration, positionAbsolute)();
 
   return (
     <>
@@ -99,6 +109,7 @@ const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOp
         initialOpacity={initialOpacity}
         unmountOnExit={false}
         visible={!loading}
+        positionAbsolute={false}
       >
         {children}
       </Fade>

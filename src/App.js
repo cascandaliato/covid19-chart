@@ -166,101 +166,113 @@ export default () => {
         flexDirection: 'column',
         flexWrap: 'nowrap',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         width: '100vw',
         minHeight: '100vh',
       }}
     >
-      <header
+      <div
+        className="font-sans"
         style={{
           flexDirection: 'column',
           flexWrap: 'nowrap',
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent: 'start',
           alignItems: 'center',
+          width: '100vw',
         }}
       >
-        <h1 className="font-bold text-3xl mt-4 text-red-600">COVID-19 Growth in Italian Regions</h1>
-        <p>Some text here</p>
-        <p>Some more text here</p>
-      </header>
-      <main
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexGrow: 1,
-          width: '100%',
-        }}
-      >
-        <OverlaySpinner
-          loading={!chartReady}
-          duration={1000}
-          onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
+        <header
+          style={{
+            flexDirection: 'column',
+            flexWrap: 'nowrap',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-              flexGrow: 1,
-              width: '100%',
-              height: '100%',
-            }}
+          <h1 className="font-bold text-3xl text-red-600">COVID-19 Growth in Italian Regions</h1>
+          <p>Some text here</p>
+          <p>Some more text here</p>
+        </header>
+        <main
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            // flexGrow: 1,
+            width: '100%',
+          }}
+        >
+          <OverlaySpinner
+            loading={!chartReady}
+            duration={1000}
+            onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
           >
-            <Plot
-              data={traces}
-              layout={layout}
-              revision={revision}
-              useResizeHandler={true}
-              onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
-              // onUpdate={setFigure}
-              onHover={handleHover}
-              onUnhover={handleUnhover}
-              onRelayout={adjustAnnotationAngle}
-              style={{ width: '100%' }}
-              config={plotlyConfig}
-            />
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
                 alignItems: 'center',
-                width: '80%',
+                // flexGrow: 1,
+                width: '100%',
+                // height: '100%',
               }}
-              className="mt-4"
             >
-              <PlayPause onClick={playing ? pause : play} playing={playing} />
-              <span style={{ minWidth: '15rem' }} className="text-center text-2xl ">
-                {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}
-              </span>
-              <Slider
-                step={1}
-                min={0}
-                max={numDays - 2}
-                value={currentDay}
-                onChange={setCurrentDay}
-                styles={{
-                  track: {
-                    width: '100%',
-                  },
-                  active: {
-                    backgroundColor: inputControlColors,
-                  },
-                  thumb: {
-                    width: '1.5rem',
-                    height: '1.5rem',
-                    backgroundColor: inputControlColors,
-                  },
-                }}
+              <Plot
+                data={traces}
+                layout={layout}
+                revision={revision}
+                useResizeHandler={true}
+                onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+                // onUpdate={setFigure}
+                onHover={handleHover}
+                onUnhover={handleUnhover}
+                onRelayout={adjustAnnotationAngle}
+                style={{ width: '100%' }}
+                config={plotlyConfig}
               />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '80%',
+                }}
+                className="mt-4"
+              >
+                <PlayPause onClick={playing ? pause : play} playing={playing} />
+                <span style={{ minWidth: '15rem' }} className="text-center text-2xl ">
+                  {dates && dayjs(dates[currentDay - 1]).format('MMMM D YYYY')}
+                </span>
+                <Slider
+                  step={1}
+                  min={0}
+                  max={numDays - 2}
+                  value={currentDay}
+                  onChange={setCurrentDay}
+                  styles={{
+                    track: {
+                      width: '100%',
+                    },
+                    active: {
+                      backgroundColor: inputControlColors,
+                    },
+                    thumb: {
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      backgroundColor: inputControlColors,
+                    },
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        </OverlaySpinner>
-      </main>
+          </OverlaySpinner>
+        </main>
+      </div>
       <Footer />
     </div>
   );
