@@ -192,8 +192,10 @@ export default () => {
             alignItems: 'center',
           }}
         >
-          <h1 className="font-bold text-3xl text-red-600">COVID-19 Growth in Italian Regions</h1>
-          <p>Some text here</p>
+          <h1 className="font-bold text-3xl bg-red-600 text-white w-screen text-center p-4 shadow-md">
+            COVID-19 Growth in Italian Regions
+          </h1>
+          <p className="mt-4">Some text here</p>
           <p>Some more text here</p>
         </header>
         <main
