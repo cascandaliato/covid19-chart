@@ -4,24 +4,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "animate.css": "^4.1.1",
+    "classnames": "^2.2.6",
     "dayjs": "^1.8.35",
     "lodash": "^4.17.20",
     "plotly.js-basic-dist": "^1.54.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-input-slider": "^6.0.0",
     "react-jss": "^10.4.0",
     "react-plotly.js": "^2.4.0",
     "react-scripts": "3.4.3",
-    "react-transition-group": "^4.4.1"
+    "react-transition-group": "^4.4.1",
+    "tailwindcss": "^1.8.10"
   },
   "scripts": {
+    "start": "npm-run-all build:tailwind-full --parallel watch:tailwind start:react",
+    "build:tailwind-full": "tailwind build src/tailwind.css -o src/tailwind.output.css",
+    "watch:tailwind": "chokidar \"tailwind.config.js\" \"src/**/*.css\" \"src/**/*.scss\" --ignore src/tailwind.output.css -c \"yarn build:tailwind\"",
+    "start:react": "react-scripts start",
     "predeploy": "yarn build",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "postbuild": "npx move-file-cli build covid && npx move-file-cli covid build/covid",
+    "build": "npm-run-all build:tailwind build:react",
+    "build:tailwind": "cross-env NODE_ENV=production tailwind build src/tailwind.css -o src/tailwind.output.css",
+    "build:react": "react-scripts build",
+    "postbuild": "npx move-file-cli build covid && npx move-file-cli covid build/covid && npx move-file-cli build/covid/robots.txt build/robots.txt",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "local": "vercel dev"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,7 +47,10 @@
     ]
   },
   "devDependencies": {
+    "chokidar-cli": "^2.1.0",
+    "cross-env": "^7.0.2",
     "move-file-cli": "^2.0.0",
-    "vercel": "^20.1.0"
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2"
   }
 }

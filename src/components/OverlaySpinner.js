@@ -1,8 +1,9 @@
-import React, { useCallback, useRef } from 'react';
-import { createUseStyles } from 'react-jss';
-import { CSSTransition } from 'react-transition-group';
+import React, { useCallback, useRef } from "react";
+import { createUseStyles } from "react-jss";
+import { CSSTransition } from "react-transition-group";
+import "./OverlaySpinner.css";
 
-const useFadeStyles = (initialOpacity, duration) =>
+const useFadeStyles = (initialOpacity, duration, positionAbsolute) =>
   createUseStyles({
     enter: {
       opacity: initialOpacity,
@@ -19,27 +20,35 @@ const useFadeStyles = (initialOpacity, duration) =>
       transition: `opacity ${duration}ms`,
     },
     centered: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: positionAbsolute ? "absolute" : "relative",
+      width: "100%",
+      height: "100%",
+      left: "0",
+      top: "0",
     },
   });
 
 const useContainerStyles = createUseStyles({
   container: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    flexGrow: 1,
+    position: "relative",
+    width: "100%",
   },
 });
 
-const Fade = ({ visible, duration, initialOpacity, children, onExited, unmountOnExit }) => {
+const Fade = ({
+  visible,
+  duration,
+  initialOpacity,
+  children,
+  onExited,
+  unmountOnExit,
+  positionAbsolute = true,
+}) => {
   const div = useRef(null);
-  const classes = useFadeStyles(initialOpacity, duration)();
+  const classes = useFadeStyles(initialOpacity, duration, positionAbsolute)();
 
   return (
     <>
@@ -65,7 +74,13 @@ const Fade = ({ visible, duration, initialOpacity, children, onExited, unmountOn
   );
 };
 
-const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOpacity = 0.1 }) => {
+const OverlaySpinner = ({
+  loading,
+  duration,
+  children,
+  onAnimationEnd,
+  initialOpacity = 0.1,
+}) => {
   const classes = useContainerStyles();
 
   return (
@@ -77,39 +92,28 @@ const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOp
         unmountOnExit={true}
         visible={loading}
       >
-        {/* https://projects.lukehaas.me/css-loaders/ */}
-        {/* <div className="loader" /> */}
         {/* https://tobiasahlin.com/spinkit/ */}
-        <div className="sk-folding-cube">
-          <div className="sk-cube1 sk-cube"></div>
-          <div className="sk-cube2 sk-cube"></div>
-          <div className="sk-cube4 sk-cube"></div>
-          <div className="sk-cube3 sk-cube"></div>
+        <div className="sk-circle">
+          <div className="sk-circle1 sk-child"></div>
+          <div className="sk-circle2 sk-child"></div>
+          <div className="sk-circle3 sk-child"></div>
+          <div className="sk-circle4 sk-child"></div>
+          <div className="sk-circle5 sk-child"></div>
+          <div className="sk-circle6 sk-child"></div>
+          <div className="sk-circle7 sk-child"></div>
+          <div className="sk-circle8 sk-child"></div>
+          <div className="sk-circle9 sk-child"></div>
+          <div className="sk-circle10 sk-child"></div>
+          <div className="sk-circle11 sk-child"></div>
+          <div className="sk-circle12 sk-child"></div>
         </div>
-        {/* <div className="loadingio-spinner-wedges-4txtq1mnnm9">
-          <div className="ldio-koe2ptwtho">
-            <div>
-              <div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </Fade>
       <Fade
         duration={duration}
         initialOpacity={initialOpacity}
         unmountOnExit={false}
         visible={!loading}
+        positionAbsolute={false}
       >
         {children}
       </Fade>

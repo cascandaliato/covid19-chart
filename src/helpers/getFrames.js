@@ -1,17 +1,37 @@
-export default (traces, regions) => {
+import styles from "./styles";
+
+const getFrames = (traces, regions) => {
   const frames = [];
   const numFrames = traces[0].x.length;
   for (let i = 1; i <= numFrames; i++) {
-    const frameLayout = { annotations: [] };
+    const frameLayout = {
+      annotations: [
+        {
+          x: Math.log10(500),
+          y: Math.log10(500),
+          xref: "x",
+          yref: "y",
+          yshift: 12,
+          text: "Cases double every week on this line",
+          showarrow: false,
+          font: {
+            size: styles.EXPONENTIAL_LINE_FONT_SIZE,
+            color: styles.FONT_COLOR,
+          },
+          visible: false,
+          textangle: 0,
+        },
+      ],
+    };
     traces.forEach((t, idx) => {
       frameLayout.annotations.push({
         x: Math.log10(t.x[i - 1]),
         y: Math.log10(t.y[i - 1]),
-        xanchor: 'left',
-        yanchor: 'middle',
+        xanchor: "left",
+        yanchor: "middle",
         text: regions[idx],
         font: {
-          size: 8,
+          size: styles.ANNOTATION_FONT_SIZE,
         },
         showarrow: false,
       });
@@ -25,22 +45,23 @@ export default (traces, regions) => {
       ...t,
       x: [t.x[i - 1]],
       y: [t.y[i - 1]],
-      mode: 'markers',
+      mode: "markers",
       marker: {
-        color: 'fuchsia',
-        size: 3,
+        color: styles.MAIN_COLOR,
+        size: styles.MARKER_SIZE,
       },
     }));
     const expontialGrowth = {
-      x: [1, 100000],
-      y: [1, 100000],
+      x: [1, 1000000],
+      y: [1, 1000000],
       line: {
-        color: 'fuchsia',
-        width: 1,
-        shape: 'spline',
+        color: styles.MAIN_COLOR,
+        width: 2,
+        shape: "spline",
+        dash: "dot",
       },
-      mode: 'lines',
-      type: 'scatter',
+      mode: "lines",
+      type: "scatter",
     };
     frames.push({
       data: [...lines, ...dots, expontialGrowth],
@@ -50,3 +71,5 @@ export default (traces, regions) => {
   }
   return frames;
 };
+
+export default getFrames;
