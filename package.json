@@ -14,7 +14,7 @@
     "react-input-slider": "^6.0.0",
     "react-jss": "^10.4.0",
     "react-plotly.js": "^2.4.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "3.4.4",
     "react-transition-group": "^4.4.1",
     "tailwindcss": "^1.8.10"
   },
