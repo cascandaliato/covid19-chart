@@ -1,7 +1,7 @@
-import React, { useCallback, useRef } from 'react';
-import { createUseStyles } from 'react-jss';
-import { CSSTransition } from 'react-transition-group';
-import './OverlaySpinner.css';
+import React, { useCallback, useRef } from "react";
+import { createUseStyles } from "react-jss";
+import { CSSTransition } from "react-transition-group";
+import "./OverlaySpinner.css";
 
 const useFadeStyles = (initialOpacity, duration, positionAbsolute) =>
   createUseStyles({
@@ -20,23 +20,21 @@ const useFadeStyles = (initialOpacity, duration, positionAbsolute) =>
       transition: `opacity ${duration}ms`,
     },
     centered: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: positionAbsolute ? 'absolute' : 'relative',
-      width: '100%',
-      height: '100%',
-      left: '0',
-      top: '0',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: positionAbsolute ? "absolute" : "relative",
+      width: "100%",
+      height: "100%",
+      left: "0",
+      top: "0",
     },
   });
 
 const useContainerStyles = createUseStyles({
   container: {
-    position: 'relative',
-    width: '100%',
-    // height: '100%',
-    // flexGrow: 1,
+    position: "relative",
+    width: "100%",
   },
 });
 
@@ -76,7 +74,13 @@ const Fade = ({
   );
 };
 
-const OverlaySpinner = ({ loading, duration, children, onAnimationEnd, initialOpacity = 0.1 }) => {
+const OverlaySpinner = ({
+  loading,
+  duration,
+  children,
+  onAnimationEnd,
+  initialOpacity = 0.1,
+}) => {
   const classes = useContainerStyles();
 
   return (

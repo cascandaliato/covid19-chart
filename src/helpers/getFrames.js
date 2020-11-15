@@ -1,3 +1,5 @@
+import styles from "./styles";
+
 const getFrames = (traces, regions) => {
   const frames = [];
   const numFrames = traces[0].x.length;
@@ -7,12 +9,15 @@ const getFrames = (traces, regions) => {
         {
           x: Math.log10(500),
           y: Math.log10(500),
-          xref: 'x',
-          yref: 'y',
+          xref: "x",
+          yref: "y",
           yshift: 12,
-          text: 'Cases double every week on this line',
+          text: "Cases double every week on this line",
           showarrow: false,
-          font: { size: 14, color: '#2d3748' },
+          font: {
+            size: styles.EXPONENTIAL_LINE_FONT_SIZE,
+            color: styles.FONT_COLOR,
+          },
           visible: false,
           textangle: 0,
         },
@@ -22,11 +27,11 @@ const getFrames = (traces, regions) => {
       frameLayout.annotations.push({
         x: Math.log10(t.x[i - 1]),
         y: Math.log10(t.y[i - 1]),
-        xanchor: 'left',
-        yanchor: 'middle',
+        xanchor: "left",
+        yanchor: "middle",
         text: regions[idx],
         font: {
-          size: 16,
+          size: styles.ANNOTATION_FONT_SIZE,
         },
         showarrow: false,
       });
@@ -40,23 +45,23 @@ const getFrames = (traces, regions) => {
       ...t,
       x: [t.x[i - 1]],
       y: [t.y[i - 1]],
-      mode: 'markers',
+      mode: "markers",
       marker: {
-        color: '#e53e3e',
-        size: 4,
+        color: styles.MAIN_COLOR,
+        size: styles.MARKER_SIZE,
       },
     }));
     const expontialGrowth = {
       x: [1, 1000000],
       y: [1, 1000000],
       line: {
-        color: '#e53e3e',
+        color: styles.MAIN_COLOR,
         width: 2,
-        shape: 'spline',
-        dash: 'dot',
+        shape: "spline",
+        dash: "dot",
       },
-      mode: 'lines',
-      type: 'scatter',
+      mode: "lines",
+      type: "scatter",
     };
     frames.push({
       data: [...lines, ...dots, expontialGrowth],

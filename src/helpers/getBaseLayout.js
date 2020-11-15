@@ -4,6 +4,7 @@ import get from "lodash/fp/get";
 import map from "lodash/fp/map";
 import max from "lodash/fp/max";
 import values from "lodash/fp/values";
+import styles from "./styles";
 
 const maxCases = (byRegionAndDate, label) =>
   flow(values, flatMap(values), map(get(label)), max)(byRegionAndDate);
@@ -15,10 +16,10 @@ const getBaseLayout = (byRegionAndDate) => ({
     range: [0, Math.log10(maxCases(byRegionAndDate, "totalCases") * 1.1)],
     fixedrange: true,
     showline: true,
-    linecolor: "rgb(224,224,224)",
+    linecolor: styles.AXES_COLOR,
     titlefont: {
-      size: 24,
-      color: "#1a202c",
+      size: styles.AXES_TITLE_SIZE,
+      color: styles.AXES_TITLE_COLOR,
     },
     automargin: true,
   },
@@ -26,26 +27,28 @@ const getBaseLayout = (byRegionAndDate) => ({
     type: "log",
     title: "New cases in the previous week",
     titlefont: {
-      size: 24,
-      color: "#1a202c",
+      size: styles.AXES_TITLE_SIZE,
+      color: styles.AXES_TITLE_COLOR,
     },
-    range: [0, Math.log10(100000)],
+    range: [0, Math.log10(maxCases(byRegionAndDate, "totalCases") * 1.1)], // must match xaxis
     fixedrange: true,
     showline: true,
-    linecolor: "rgb(224,224,224)",
+    linecolor: styles.AXES_COLOR,
     automargin: true,
   },
   responsive: true,
   autosize: true,
   showlegend: false,
-  paper_bgcolor: "rgba(255,255,255,0)",
-  plot_bgcolor: "rgba(255,255,255,0)",
+  paper_bgcolor: styles.CHART_BACKGROUND,
+  plot_bgcolor: styles.CHART_BACKGROUND,
   hovermode: "closest",
-  hoverlabel: { bgcolor: "white", font: { size: 16, color: "#1a202c" } },
+  hoverlabel: {
+    bgcolor: styles.TOOLTIP_BACKGROUND,
+    font: { size: styles.TOOLTIP_FONT_SIZE, color: styles.FONT_COLOR },
+  },
   font: {
-    color: "#2d3748",
-    family:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+    color: styles.FONT_COLOR,
+    family: styles.FONT_FAMILY,
   },
 });
 

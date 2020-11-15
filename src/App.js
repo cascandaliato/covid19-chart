@@ -1,32 +1,19 @@
 import dayjs from "dayjs";
-import Plotly from "plotly.js-basic-dist";
 import React, { useCallback, useEffect, useState } from "react";
-import createPlotlyComponent from "react-plotly.js/factory";
+import Chart from "./components/Chart";
 import Footer from "./components/Footer";
 import OverlaySpinner from "./components/OverlaySpinner";
-import PlayPause from "./components/PlayPause";
-import Slider from "./components/Slider";
-import { inputControlColors } from "./helpers/colors";
 import getAngle from "./helpers/getAngle";
 import getBaseLayout from "./helpers/getBaseLayout";
 import getFrames from "./helpers/getFrames";
 import getTraces from "./helpers/getTraces";
-import useAutoCounter from "./hooks/useAutoCounter";
-import useBodyClasses from "./hooks/useBodyClasses";
-import useCovidData from "./hooks/useCovidData";
+import styles from "./helpers/styles";
+import useAutoIncrementingCounter from "./hooks/use-auto-incrementing-counter";
+import useCovidData from "./hooks/use-covid-data";
 
 const DELTA_DAYS = 7;
 
-const Plot = createPlotlyComponent(Plotly);
-
-const plotlyConfig = { modeBarButtons: [[]], displaylogo: false };
-
-// let throttle = false;
-
 export default () => {
-  // useBodyClasses('bg-gradient-to-b', 'from-white', 'via-gray-100', 'to-white');
-  // useBodyClasses('bg-gray-100');
-
   const {
     count: currentDay,
     setCount: setCurrentDay,
@@ -37,7 +24,7 @@ export default () => {
     playing,
     play,
     pause,
-  } = useAutoCounter();
+  } = useAutoIncrementingCounter();
   const {
     byRegionAndDate,
     regions,
@@ -118,11 +105,11 @@ export default () => {
         if (idx > regions.length) return;
 
         if (hoveredTraces.has(idx)) {
-          trace.line.color = "#e53e3e";
+          trace.line.color = styles.MAIN_COLOR;
           trace.line.width = 2;
-        } else {
-          trace.line.color = "gray";
-          trace.line.width = 0.5;
+          // } else {
+          // trace.line.color = "fuchsia";
+          // trace.line.width = 0.5;
         }
       });
       setTraces(newTraces);
@@ -139,10 +126,10 @@ export default () => {
         if (idx > regions.length) return;
 
         if (hoveredTraces.has(idx)) {
-          trace.line.color = "#e53e3e";
+          trace.line.color = styles.MAIN_COLOR;
           trace.line.width = 2;
         } else {
-          trace.line.color = "#2d3748";
+          trace.line.color = styles.LINE_COLOR;
           trace.line.width = 0.5;
         }
       });
@@ -167,98 +154,41 @@ export default () => {
   };
 
   return (
-    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center w-screen">
-      <header className="w-full flex flex-no-wrap flex-col justify-center items-center">
-        <div className="w-full bg-red-600 shadow-md ">
-          <p className="animate__animated animate__fadeIn font-bold text-3xl text-white w-full text-center my-4">
+    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center w-full">
+      <header className="w-full flex flex-no-wrap flex-col justify-between items-center flex-grow">
+        <div className="w-full bg-red-600 shadow-md">
+          <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-2">
             COVID-19 Growth in Italian Regions
           </p>
         </div>
-        <p className="mt-8 max-w-xl text-justify">
-          This interactive chart compares the number of new weekly cases with
-          the total number of confirmed cases. It is plotted on a logarithmic
-          scale so that exponential growth, i.e. cases doubling every week,
-          corresponds to a straight line.
+        <p className="mt-6 px-6 max-w-3xl text-left">
+          This interactive chart compares the number of total cases with the
+          number of new cases from the previous week. It is plotted using a
+          logarithmic scale so that exponential growth is represented by a
+          straight line along which cases double every week.
         </p>
       </header>
-      <main
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          // flexGrow: 1,
-          width: "100%",
-          border: "3px solid green",
-        }}
-      >
+      <main className="flex justify-center items-center w-full -mt-8">
         <OverlaySpinner
           loading={!chartReady}
           duration={1000}
           onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              // flexGrow: 1,
-              width: "100%",
-              // height: '100%',
-            }}
-          >
-            <Plot
-              data={traces}
-              layout={layout}
-              revision={revision}
-              useResizeHandler={true}
-              onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
-              // onUpdate={setFigure}
-              onHover={handleHover}
-              onUnhover={handleUnhover}
-              onRelayout={adjustAnnotationAngle}
-              style={{ width: "100%" }}
-              config={plotlyConfig}
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "80%",
-              }}
-              className="mt-4"
-            >
-              <PlayPause onClick={playing ? pause : play} playing={playing} />
-              <span
-                style={{ minWidth: "15rem" }}
-                className="text-center text-2xl "
-              >
-                {dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
-              </span>
-              <Slider
-                step={1}
-                min={0}
-                max={numDays - 2}
-                value={currentDay}
-                onChange={setCurrentDay}
-                styles={{
-                  track: {
-                    width: "100%",
-                  },
-                  active: {
-                    backgroundColor: inputControlColors,
-                  },
-                  thumb: {
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    backgroundColor: inputControlColors,
-                  },
-                }}
-              />
-            </div>
-          </div>
+          <Chart
+            data={traces}
+            layout={layout}
+            revision={revision}
+            onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+            onHover={handleHover}
+            onUnhover={handleUnhover}
+            onRelayout={adjustAnnotationAngle}
+            sliderValue={currentDay}
+            onSliderChange={setCurrentDay}
+            sliderMax={numDays - 2}
+            date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
+            onPlayPauseClick={playing ? pause : play}
+            playing={playing}
+          />
         </OverlaySpinner>
       </main>
       <Footer />

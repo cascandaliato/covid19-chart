@@ -1,10 +1,10 @@
-import React from 'react';
-import Slider from 'react-input-slider';
-import styless from './Slider.module.css';
+import React from "react";
+import Slider from "react-input-slider";
+import ownStyles from "./Slider.module.css";
 
 export default ({ min, max, step, value, onChange, styles }) => {
   return (
-    <div style={{ flexGrow: 1, display: 'flex' }} className={styless.slider}>
+    <div className={`${ownStyles.slider} flex flex-grow`}>
       <Slider
         xmin={min}
         xmax={max}
