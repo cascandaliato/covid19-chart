@@ -16,7 +16,7 @@
     "react-plotly.js": "^2.4.0",
     "react-scripts": "3.4.3",
     "react-transition-group": "^4.4.1",
-    "tailwindcss": "^1.8.10"
+    "tailwindcss": "^1.9.6"
   },
   "scripts": {
     "start": "npm-run-all build:tailwind-full --parallel watch:tailwind start:react",
