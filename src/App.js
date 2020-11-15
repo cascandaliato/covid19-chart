@@ -163,12 +163,24 @@ export default () => {
         </div>
         <p className="mt-6 px-6 max-w-3xl text-left">
           This interactive chart compares the number of total cases with the
-          number of new cases from the previous week. It is plotted using a
-          logarithmic scale so that exponential growth is represented by a
-          straight line along which cases double every week.
+          number of new cases in the previous week. It is plotted using a{" "}
+          <a
+            href="https://en.wikipedia.org/wiki/Logarithmic_scale"
+            className="text-red-600 hover:underline"
+          >
+            logarithmic scale
+          </a>{" "}
+          so that{" "}
+          <a
+            href="https://en.wikipedia.org/wiki/Exponential_growth"
+            className="text-red-600 hover:underline"
+          >
+            exponential growth
+          </a>{" "}
+          is represented by a straight line along which cases double every week.
         </p>
       </header>
-      <main className="flex justify-center items-center w-full -mt-8">
+      <main className="flex justify-center items-center w-11/12 -mt-8">
         <OverlaySpinner
           loading={!chartReady}
           duration={1000}
