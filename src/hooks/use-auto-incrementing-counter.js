@@ -1,7 +1,7 @@
-import clamp from 'lodash/clamp';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import clamp from "lodash/clamp";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export default () => {
+const useAutoIncrementingCounter = () => {
   const [min, setMin] = useState(1);
   const [max, setMax] = useState(1);
   const [count, setCount] = useState(min);
@@ -33,7 +33,7 @@ export default () => {
 
   const play = useCallback(
     () => min !== null && max !== null && delayMs !== null && setPlaying(true),
-    [min, max, delayMs],
+    [min, max, delayMs]
   );
   const pause = useCallback(() => setPlaying(false), []);
 
@@ -54,3 +54,5 @@ export default () => {
     pause,
   };
 };
+
+export default useAutoIncrementingCounter;

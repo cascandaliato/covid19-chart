@@ -34,7 +34,7 @@ const mapPropValue = (propName, mapFn) => (obj) => ({
 
 const withMinimum = (minimum) => (val) => Math.max(minimum, val);
 
-export default (daysDelay = 1) => {
+const useCovidData = (daysDelay = 1) => {
   const [covidData, setCovidData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -89,3 +89,5 @@ export default (daysDelay = 1) => {
 
   return { ...covidData, loading };
 };
+
+export default useCovidData;

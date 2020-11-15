@@ -2,7 +2,7 @@ const TAILWIND_GRAY_900 = "#1a202c";
 const TAILWIND_GREEN_600 = "#38a169";
 const TAILWIND_RED_600 = "#e53e3e";
 
-export default {
+const styles = {
   MAIN_COLOR: TAILWIND_RED_600,
   SECONDARY_COLOR: TAILWIND_GREEN_600,
   AXES_COLOR: "rgb(224,224,224)",
@@ -19,3 +19,5 @@ export default {
   TOOLTIP_BACKGROUND: "white",
   TOOLTIP_FONT_SIZE: 16,
 };
+
+export default styles;

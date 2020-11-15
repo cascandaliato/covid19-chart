@@ -3,17 +3,17 @@ import React, { useCallback, useEffect, useState } from "react";
 import Chart from "./components/Chart";
 import Footer from "./components/Footer";
 import OverlaySpinner from "./components/OverlaySpinner";
-import getAngle from "./helpers/getAngle";
-import getBaseLayout from "./helpers/getBaseLayout";
-import getFrames from "./helpers/getFrames";
-import getTraces from "./helpers/getTraces";
+import getAngle from "./helpers/get-angle";
+import getBaseLayout from "./helpers/get-base-layout";
+import getFrames from "./helpers/get-frames";
+import getTraces from "./helpers/get-traces";
 import styles from "./helpers/styles";
 import useAutoIncrementingCounter from "./hooks/use-auto-incrementing-counter";
 import useCovidData from "./hooks/use-covid-data";
 
 const DELTA_DAYS = 7;
 
-export default () => {
+const App = () => {
   const {
     count: currentDay,
     setCount: setCurrentDay,
@@ -207,3 +207,5 @@ export default () => {
     </div>
   );
 };
+
+export default App;
