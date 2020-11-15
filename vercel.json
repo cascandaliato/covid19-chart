@@ -4,7 +4,7 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "(/(?!covid)(?!api).*)",
+      "source": "(/(?!covid)(?!api)(?!robots).*)",
       "destination": "/covid"
     },
     {
