@@ -1,5 +1,5 @@
 import clamp from "lodash/clamp";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const useAutoIncrementingCounter = () => {
   const [min, setMin] = useState(1);
@@ -7,35 +7,22 @@ const useAutoIncrementingCounter = () => {
   const [count, setCount] = useState(min);
   const [delayMs, setDelayMs] = useState(1000);
   const [playing, setPlaying] = useState(false);
-  const [timeElapsed, setTimeElapsed] = useState(false);
-  const timerRef = useRef(null);
+  const [timerId, setTimerId] = useState(null);
 
   useEffect(() => {
-    clearTimeout(timerRef.current);
-    setTimeElapsed(false);
+    const resetTimer = () => {
+      clearTimeout(timerId);
+      setTimerId(null);
+    };
 
-    if (playing) {
+    if (!playing) return resetTimer();
+    if (timerId !== null) return;
+
+    if (count < max) {
       setCount((c) => c + 1);
-      setTimeElapsed(true);
+      setTimerId(setTimeout(resetTimer, delayMs));
     }
-  }, [playing]);
-
-  useEffect(() => {
-    if (playing && timeElapsed && count < max) {
-      setTimeElapsed(false);
-
-      timerRef.current = setTimeout(() => {
-        setCount((c) => c + 1);
-        setTimeElapsed(true);
-      }, delayMs);
-    }
-  }, [count, delayMs, max, playing, timeElapsed]);
-
-  const play = useCallback(
-    () => min !== null && max !== null && delayMs !== null && setPlaying(true),
-    [min, max, delayMs]
-  );
-  const pause = useCallback(() => setPlaying(false), []);
+  }, [count, timerId, delayMs, max, playing]);
 
   return {
     count,
@@ -50,8 +37,12 @@ const useAutoIncrementingCounter = () => {
     delayMs,
     setDelayMs,
     playing,
-    play,
-    pause,
+    play: useCallback(
+      () =>
+        min !== null && max !== null && delayMs !== null && setPlaying(true),
+      [min, max, delayMs]
+    ),
+    pause: useCallback(() => setPlaying(false), []),
   };
 };
 

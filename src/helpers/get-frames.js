@@ -43,6 +43,7 @@ const getFrames = (traces, regions) => {
     }));
     const dots = traces.map((t) => ({
       ...t,
+      text: [t.text[i - 1]],
       x: [t.x[i - 1]],
       y: [t.y[i - 1]],
       mode: "markers",
@@ -62,6 +63,7 @@ const getFrames = (traces, regions) => {
       },
       mode: "lines",
       type: "scatter",
+      hoverinfo: "skip",
     };
     frames.push({
       data: [...lines, ...dots, expontialGrowth],

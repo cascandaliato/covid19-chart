@@ -50,8 +50,7 @@ const App = () => {
 
     setStartingDay(1);
     setNumDays(dates.length);
-    // setDelayMs(Math.floor(15000 / dates.length));
-    setDelayMs(50);
+    setDelayMs(100);
 
     const baseLayout = getBaseLayout(byRegionAndDate);
     setFrames(
@@ -100,23 +99,11 @@ const App = () => {
 
   const updateChart = useCallback(
     (day) => {
-      const newTraces = frames[day - 1].data;
-      newTraces.forEach((trace, idx) => {
-        if (idx > regions.length) return;
-
-        if (hoveredTraces.has(idx)) {
-          trace.line.color = styles.MAIN_COLOR;
-          trace.line.width = 2;
-          // } else {
-          // trace.line.color = "fuchsia";
-          // trace.line.width = 0.5;
-        }
-      });
-      setTraces(newTraces);
+      setTraces(frames[day - 1].data);
       setLayout(frames[day - 1].layout);
       setRevision((r) => r + 1);
     },
-    [frames, hoveredTraces, regions]
+    [frames]
   );
 
   useEffect(() => {
@@ -142,13 +129,16 @@ const App = () => {
   }, [currentDay, pageReady, updateChart]);
 
   const handleHover = (e) => {
-    const regionsIdx = e.points.reduce((r, p) => [...r, p.curveNumber], []);
+    const regionsIdx = e.points.reduce(
+      (r, p) => [...r, p.curveNumber % regions.length],
+      []
+    );
     setHoveredTraces((t) => new Set([...t, ...regionsIdx]));
   };
 
   const handleUnhover = (e) => {
     const regionsIdx = new Set(
-      e.points.reduce((r, p) => [...r, p.curveNumber], [])
+      e.points.reduce((r, p) => [...r, p.curveNumber % regions.length], [])
     );
     setHoveredTraces((t) => new Set([...t].filter((i) => !regionsIdx.has(i))));
   };

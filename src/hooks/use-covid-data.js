@@ -19,7 +19,7 @@ import indexOf from "lodash/indexOf";
 import set from "lodash/set";
 import { useEffect, useState } from "react";
 
-const itToEn = {
+const IT_TO_EN = {
   data: "date",
   denominazione_regione: "region",
   totale_casi: "totalCases",
@@ -35,8 +35,7 @@ const mapPropValue = (propName, mapFn) => (obj) => ({
 const withMinimum = (minimum) => (val) => Math.max(minimum, val);
 
 const useCovidData = (daysDelay = 1) => {
-  const [covidData, setCovidData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [covidData, setCovidData] = useState({ loading: true });
 
   useEffect(() => {
     (async () => {
@@ -48,8 +47,8 @@ const useCovidData = (daysDelay = 1) => {
 
       const data = map(
         flow(
-          pick(keys(itToEn)),
-          mapKeys(propertyOf(itToEn)),
+          pick(keys(IT_TO_EN)),
+          mapKeys(propertyOf(IT_TO_EN)),
           mapPropValue("totalCases", withMinimum(1))
         )
       )(rawData);
@@ -82,12 +81,11 @@ const useCovidData = (daysDelay = 1) => {
           )
         )
       )(byRegionAndDate);
-      setCovidData({ byRegionAndDate, regions, dates });
-      setLoading(false);
+      setCovidData({ byRegionAndDate, regions, dates, loading: false });
     })();
   }, [daysDelay]);
 
-  return { ...covidData, loading };
+  return covidData;
 };
 
 export default useCovidData;
