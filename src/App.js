@@ -50,8 +50,7 @@ const App = () => {
 
     setStartingDay(1);
     setNumDays(dates.length);
-    // setDelayMs(Math.floor(15000 / dates.length));
-    setDelayMs(50);
+    setDelayMs(100);
 
     const baseLayout = getBaseLayout(byRegionAndDate);
     setFrames(
