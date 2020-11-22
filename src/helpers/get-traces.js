@@ -36,7 +36,7 @@ const getTraces = (byRegionAndDate, dates) =>
             x: [...trace.x, totalCases],
             y: [...trace.y, newCases],
             text: [...trace.text, dates[idx]],
-            hovertemplate: `<b>${region}</b><br><i>%{text}</i><br>Total cases: %{x}<br>New cases: %{y}<extra></extra>`,
+            hovertemplate: `<b>${region}</b><br><i>%{text}</i><br>Total cases: %{x:,.0f}<br>New cases: %{y:,.0f}<extra></extra>`,
           }),
           traceTemplate()
         )(regionData)
