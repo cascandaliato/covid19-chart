@@ -21,8 +21,15 @@ const useAutoIncrementingCounter = () => {
     if (count < max) {
       setCount((c) => c + 1);
       setTimerId(setTimeout(resetTimer, delayMs));
+    } else if (count === max) {
+      setPlaying(false);
     }
   }, [count, timerId, delayMs, max, playing]);
+
+  const play = useCallback(
+    () => min !== null && max !== null && delayMs !== null && setPlaying(true),
+    [min, max, delayMs]
+  );
 
   return {
     count,
@@ -37,11 +44,13 @@ const useAutoIncrementingCounter = () => {
     delayMs,
     setDelayMs,
     playing,
-    play: useCallback(
-      () =>
-        min !== null && max !== null && delayMs !== null && setPlaying(true),
-      [min, max, delayMs]
-    ),
+    play:
+      count === max
+        ? () => {
+            setCount(min);
+            setPlaying(true);
+          }
+        : play,
     pause: useCallback(() => setPlaying(false), []),
   };
 };

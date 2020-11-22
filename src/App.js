@@ -95,7 +95,8 @@ const App = () => {
       adjustAnnotationAngle();
       play();
     }
-  }, [pageReady, play, adjustAnnotationAngle]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageReady, adjustAnnotationAngle]);
 
   const updateChart = useCallback(
     (day) => {
