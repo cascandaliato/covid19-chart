@@ -209,7 +209,7 @@ const App = () => {
               playing={playing}
             />
             <RegionsFilter
-              classes="ml-4"
+              classes="ml-4 mt-8"
               regions={regions}
               selectedRegions={selectedRegions}
               onChange={setSelectedRegions}
