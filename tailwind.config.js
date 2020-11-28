@@ -36,6 +36,11 @@ module.exports = {
       ],
     },
   },
-  variants: { margin: ["responsive", "hover", "focus"] },
+  variants: {
+    extend: {
+      cursor: ["hover"],
+      margin: ["responsive", "hover", "focus"],
+    },
+  },
   plugins: [],
 };
