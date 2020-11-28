@@ -4,24 +4,9 @@ const getFrames = (traces, regions) => {
   const frames = [];
   const numFrames = traces[0].x.length;
   for (let i = 1; i <= numFrames; i++) {
+    // layout / annotations
     const frameLayout = {
-      annotations: [
-        {
-          x: Math.log10(500),
-          y: Math.log10(500),
-          xref: "x",
-          yref: "y",
-          yshift: 12,
-          text: "Cases double every week on this line",
-          showarrow: false,
-          font: {
-            size: styles.EXPONENTIAL_LINE_FONT_SIZE,
-            color: styles.FONT_COLOR,
-          },
-          visible: false,
-          textangle: 0,
-        },
-      ],
+      annotations: [],
     };
     traces.forEach((t, idx) => {
       frameLayout.annotations.push({
@@ -36,6 +21,23 @@ const getFrames = (traces, regions) => {
         showarrow: false,
       });
     });
+    frameLayout.annotations.push({
+      x: Math.log10(500),
+      y: Math.log10(500),
+      xref: "x",
+      yref: "y",
+      yshift: 12,
+      text: "Cases double every week on this line",
+      showarrow: false,
+      font: {
+        size: styles.EXPONENTIAL_LINE_FONT_SIZE,
+        color: styles.FONT_COLOR,
+      },
+      visible: false,
+      textangle: 0,
+    });
+
+    // lines and markers
     const lines = traces.map((t) => ({
       ...t,
       x: t.x.slice(0, i),

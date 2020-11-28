@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Chart from "./components/Chart";
 import Footer from "./components/Footer";
 import OverlaySpinner from "./components/OverlaySpinner";
+import RegionsFilter from "./components/RegionsFilter";
 import getAngle from "./helpers/get-angle";
 import getBaseLayout from "./helpers/get-base-layout";
 import getFrames from "./helpers/get-frames";
@@ -12,6 +13,7 @@ import useAutoIncrementingCounter from "./hooks/use-auto-incrementing-counter";
 import useCovidData from "./hooks/use-covid-data";
 
 const DELTA_DAYS = 7;
+const EMPTY_SET = new Set();
 
 const App = () => {
   const {
@@ -31,6 +33,7 @@ const App = () => {
     dates,
     loading: loadingRawData,
   } = useCovidData(DELTA_DAYS);
+  const [selectedRegions, setSelectedRegions] = useState(EMPTY_SET);
   const [chartReady, setChartReady] = useState(false);
   const [pageReady, setPageReady] = useState(false);
 
@@ -43,6 +46,12 @@ const App = () => {
   });
   const [revision, setRevision] = useState(0);
   const [hoveredTraces, setHoveredTraces] = useState(new Set());
+
+  useEffect(() => {
+    if (regions) {
+      setSelectedRegions(new Set(regions));
+    }
+  }, [regions]);
 
   // create chart
   useEffect(() => {
@@ -83,12 +92,12 @@ const App = () => {
     setFrames((oldFrames) => {
       const newFrames = [...oldFrames];
       newFrames.forEach((frame) => {
-        frame.layout.annotations[0].visible = true;
-        frame.layout.annotations[0].textangle = getAngle();
+        frame.layout.annotations[regions.length].visible = true;
+        frame.layout.annotations[regions.length].textangle = getAngle();
       });
       return newFrames;
     });
-  }, [chartReady]);
+  }, [chartReady, regions]);
 
   useEffect(() => {
     if (pageReady) {
@@ -97,15 +106,6 @@ const App = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageReady, adjustAnnotationAngle]);
-
-  const updateChart = useCallback(
-    (day) => {
-      setTraces(frames[day - 1].data);
-      setLayout(frames[day - 1].layout);
-      setRevision((r) => r + 1);
-    },
-    [frames]
-  );
 
   useEffect(() => {
     setTraces((oldTraces) => {
@@ -126,8 +126,20 @@ const App = () => {
   }, [hoveredTraces, regions]);
 
   useEffect(() => {
-    if (pageReady) updateChart(currentDay);
-  }, [currentDay, pageReady, updateChart]);
+    if (!pageReady) return;
+
+    const currentFrame = frames[currentDay - 1];
+
+    regions.forEach((region, idx) => {
+      const isRegionVisible = selectedRegions.has(region);
+      currentFrame.layout.annotations[idx].visible = isRegionVisible;
+      currentFrame.data[idx].visible = isRegionVisible;
+      currentFrame.data[idx + regions.length].visible = isRegionVisible;
+    });
+    setTraces(currentFrame.data);
+    setLayout(currentFrame.layout);
+    setRevision((r) => r + 1);
+  }, [currentDay, pageReady, frames, regions, selectedRegions]);
 
   const handleHover = (e) => {
     const regionsIdx = e.points.reduce(
@@ -145,11 +157,11 @@ const App = () => {
   };
 
   return (
-    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center min-h-screen">
+    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center h-screen">
       <div className="flex flex-no-wrap flex-col justify-between items-center w-full">
         <header className="w-full flex flex-no-wrap flex-col justify-between items-center flex-grow">
-          <div className="w-full bg-red-600 shadow-md">
-            <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-2">
+          <div className="w-full bg-red-600 shadow-sm">
+            <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-4">
               COVID-19 Growth in Italian Regions
             </p>
           </div>
@@ -173,7 +185,7 @@ const App = () => {
             week.
           </p>
         </header>
-        <main className="flex justify-center items-center w-11/12 -mt-8">
+        <main className="flex flex-wrap justify-center items-center w-11/12 -mt-8">
           <OverlaySpinner
             loading={!chartReady}
             duration={1000}
@@ -195,6 +207,12 @@ const App = () => {
               date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
               onPlayPauseClick={playing ? pause : play}
               playing={playing}
+            />
+            <RegionsFilter
+              classes="w-44 ml-2"
+              regions={regions}
+              selectedRegions={selectedRegions}
+              onChange={setSelectedRegions}
             />
           </OverlaySpinner>
         </main>

@@ -48,7 +48,6 @@ const Chart = ({
           onChange={onSliderChange}
           styles={{
             track: {
-              // width: "100%",
               flexGrow: 1,
             },
             active: {

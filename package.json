@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tailwindcss/custom-forms": "^0.2.1",
     "animate.css": "^4.1.1",
     "autoprefixer": "^10.0.4",
     "classnames": "^2.2.6",
