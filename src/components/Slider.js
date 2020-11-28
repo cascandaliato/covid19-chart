@@ -4,7 +4,7 @@ import ownStyles from "./Slider.module.css";
 
 const Slider = ({ min, max, step, value, onChange, styles }) => {
   return (
-    <div className={`${ownStyles.slider} flex flex-grow`}>
+    <div className={`${ownStyles.slider} flex flex-grow hover:cursor-pointer`}>
       <ReactInputSlider
         xmin={min}
         xmax={max}

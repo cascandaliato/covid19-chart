@@ -145,55 +145,60 @@ const App = () => {
   };
 
   return (
-    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center w-full">
-      <header className="w-full flex flex-no-wrap flex-col justify-between items-center flex-grow">
-        <div className="w-full bg-red-600 shadow-md">
-          <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-2">
-            COVID-19 Growth in Italian Regions
+    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center min-h-screen">
+      <div className="flex flex-no-wrap flex-col justify-between items-center w-full">
+        <header className="w-full flex flex-no-wrap flex-col justify-between items-center flex-grow">
+          <div className="w-full bg-red-600 shadow-md">
+            <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-2">
+              COVID-19 Growth in Italian Regions
+            </p>
+          </div>
+          <p className="mt-6 px-6 max-w-3xl text-left">
+            This interactive chart compares the number of total cases with the
+            number of new cases in the previous week. It is plotted using a{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Logarithmic_scale"
+              className="text-red-600 hover:underline"
+            >
+              logarithmic scale
+            </a>{" "}
+            so that{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Exponential_growth"
+              className="text-red-600 hover:underline"
+            >
+              exponential growth
+            </a>{" "}
+            is represented by a straight line along which cases double every
+            week.
           </p>
-        </div>
-        <p className="mt-6 px-6 max-w-3xl text-left">
-          This interactive chart compares the number of total cases with the
-          number of new cases in the previous week. It is plotted using a{" "}
-          <a
-            href="https://en.wikipedia.org/wiki/Logarithmic_scale"
-            className="text-red-600 hover:underline"
+        </header>
+        <main className="flex justify-center items-center w-11/12 -mt-8">
+          <OverlaySpinner
+            loading={!chartReady}
+            duration={1000}
+            onAnimationEnd={useCallback(() => setPageReady(true), [
+              setPageReady,
+            ])}
           >
-            logarithmic scale
-          </a>{" "}
-          so that{" "}
-          <a
-            href="https://en.wikipedia.org/wiki/Exponential_growth"
-            className="text-red-600 hover:underline"
-          >
-            exponential growth
-          </a>{" "}
-          is represented by a straight line along which cases double every week.
-        </p>
-      </header>
-      <main className="flex justify-center items-center w-11/12 -mt-8">
-        <OverlaySpinner
-          loading={!chartReady}
-          duration={1000}
-          onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
-        >
-          <Chart
-            data={traces}
-            layout={layout}
-            revision={revision}
-            onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
-            onHover={handleHover}
-            onUnhover={handleUnhover}
-            onRelayout={adjustAnnotationAngle}
-            sliderValue={currentDay}
-            onSliderChange={setCurrentDay}
-            sliderMax={numDays - 2}
-            date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
-            onPlayPauseClick={playing ? pause : play}
-            playing={playing}
-          />
-        </OverlaySpinner>
-      </main>
+            <Chart
+              data={traces}
+              layout={layout}
+              revision={revision}
+              onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+              onHover={handleHover}
+              onUnhover={handleUnhover}
+              onRelayout={adjustAnnotationAngle}
+              sliderValue={currentDay}
+              onSliderChange={setCurrentDay}
+              sliderMax={numDays - 2}
+              date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
+              onPlayPauseClick={playing ? pause : play}
+              playing={playing}
+            />
+          </OverlaySpinner>
+        </main>
+      </div>
       <Footer />
     </div>
   );
