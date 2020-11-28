@@ -185,7 +185,7 @@ const App = () => {
             week.
           </p>
         </header>
-        <main className="flex flex-wrap justify-center items-center w-11/12 -mt-8">
+        <main className="w-11/12 -mt-8">
           <OverlaySpinner
             loading={!chartReady}
             duration={1000}
@@ -209,7 +209,7 @@ const App = () => {
               playing={playing}
             />
             <RegionsFilter
-              classes="w-44 ml-2"
+              classes="ml-4"
               regions={regions}
               selectedRegions={selectedRegions}
               onChange={setSelectedRegions}
