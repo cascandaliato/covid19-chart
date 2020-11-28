@@ -23,7 +23,7 @@ const Chart = ({
   onPlayPauseClick,
   playing,
 }) => (
-  <div className="flex flex-col justify-evenly items-center w-full">
+  <div className="flex flex-col justify-evenly items-center w-5/6">
     <Plot
       data={data}
       layout={layout}
@@ -48,7 +48,6 @@ const Chart = ({
           onChange={onSliderChange}
           styles={{
             track: {
-              // width: "100%",
               flexGrow: 1,
             },
             active: {
