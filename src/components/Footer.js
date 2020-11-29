@@ -34,8 +34,8 @@ const Footer = ({ className }) => (
     <span className="order-first sm:order-3">
       © 2020{" "}
       <a
-        href="https://github.com/cascandaliato"
-        title="GitHub user cascandaliato"
+        href="https://cascandaliato.com"
+        title="Author's home page"
         className="hover:underline text-gray-900"
       >
         Carmelo Scandaliato{" "}
