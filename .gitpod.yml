@@ -1,7 +1,7 @@
 tasks:
   - init: yarn install
-    command: npx vercel dev --token $VERCEL_TOKEN
-    name: vercel dev
+    command: yarn start
+    name: yarn start
 
 ports:
   - port: 3000
