@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import { CSSTransition } from "react-transition-group";
 import "./OverlaySpinner.css";
 
-const useFadeStyles = (initialOpacity, duration, positionAbsolute) =>
+const useFadeStyles = (initialOpacity, duration) =>
   createUseStyles({
     enter: {
       opacity: initialOpacity,
@@ -19,24 +19,7 @@ const useFadeStyles = (initialOpacity, duration, positionAbsolute) =>
       opacity: 0,
       transition: `opacity ${duration}ms`,
     },
-    centered: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      position: positionAbsolute ? "absolute" : "relative",
-      width: "100%",
-      height: "100%",
-      left: "0",
-      top: "0",
-    },
   });
-
-const useContainerStyles = createUseStyles({
-  container: {
-    position: "relative",
-    width: "100%",
-  },
-});
 
 const Fade = ({
   visible,
@@ -46,9 +29,10 @@ const Fade = ({
   onExited,
   unmountOnExit,
   positionAbsolute = true,
+  className = "flex items-center justify-center",
 }) => {
   const div = useRef(null);
-  const classes = useFadeStyles(initialOpacity, duration, positionAbsolute)();
+  const classes = useFadeStyles(initialOpacity, duration)();
 
   return (
     <>
@@ -66,7 +50,11 @@ const Fade = ({
         unmountOnExit={unmountOnExit}
         onExited={useCallback(() => onExited && onExited(), [onExited])}
       >
-        <div ref={div} className={`${classes.enter} ${classes.centered}`}>
+        <div
+          ref={div}
+          className={`w-full h-full ${className}
+          ${positionAbsolute ? "absolute" : "relative"} ${classes.enter}`}
+        >
           {children}
         </div>
       </CSSTransition>
@@ -80,45 +68,43 @@ const OverlaySpinner = ({
   children,
   onAnimationEnd,
   initialOpacity = 0.1,
-}) => {
-  const classes = useContainerStyles();
-
-  return (
-    <div className={classes.container}>
-      <Fade
-        duration={duration}
-        initialOpacity={1}
-        onExited={onAnimationEnd}
-        unmountOnExit={true}
-        visible={loading}
-      >
-        {/* https://tobiasahlin.com/spinkit/ */}
-        <div className="sk-circle">
-          <div className="sk-circle1 sk-child"></div>
-          <div className="sk-circle2 sk-child"></div>
-          <div className="sk-circle3 sk-child"></div>
-          <div className="sk-circle4 sk-child"></div>
-          <div className="sk-circle5 sk-child"></div>
-          <div className="sk-circle6 sk-child"></div>
-          <div className="sk-circle7 sk-child"></div>
-          <div className="sk-circle8 sk-child"></div>
-          <div className="sk-circle9 sk-child"></div>
-          <div className="sk-circle10 sk-child"></div>
-          <div className="sk-circle11 sk-child"></div>
-          <div className="sk-circle12 sk-child"></div>
-        </div>
-      </Fade>
-      <Fade
-        duration={duration}
-        initialOpacity={initialOpacity}
-        unmountOnExit={false}
-        visible={!loading}
-        positionAbsolute={false}
-      >
-        {children}
-      </Fade>
-    </div>
-  );
-};
+  className,
+}) => (
+  <div className="relative w-full h-full">
+    <Fade
+      duration={duration}
+      initialOpacity={1}
+      onExited={onAnimationEnd}
+      unmountOnExit={true}
+      visible={loading}
+    >
+      {/* https://tobiasahlin.com/spinkit/ */}
+      <div className="sk-circle">
+        <div className="sk-circle1 sk-child"></div>
+        <div className="sk-circle2 sk-child"></div>
+        <div className="sk-circle3 sk-child"></div>
+        <div className="sk-circle4 sk-child"></div>
+        <div className="sk-circle5 sk-child"></div>
+        <div className="sk-circle6 sk-child"></div>
+        <div className="sk-circle7 sk-child"></div>
+        <div className="sk-circle8 sk-child"></div>
+        <div className="sk-circle9 sk-child"></div>
+        <div className="sk-circle10 sk-child"></div>
+        <div className="sk-circle11 sk-child"></div>
+        <div className="sk-circle12 sk-child"></div>
+      </div>
+    </Fade>
+    <Fade
+      duration={duration}
+      initialOpacity={initialOpacity}
+      unmountOnExit={false}
+      visible={!loading}
+      positionAbsolute={false}
+      className={className}
+    >
+      {children}
+    </Fade>
+  </div>
+);
 
 export default OverlaySpinner;

@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
-const RegionsFilter = ({ classes, regions, selectedRegions, onChange }) => {
+const RegionsFilter = ({ className, regions, selectedRegions, onChange }) => {
   const bigCheckboxRef = useRef(null);
 
   // woark around Tailwind CSS forms not styling indeterminate checkboxes properly
-  useEffect(() => {
-    if (bigCheckboxRef.current && regions) {
-      const bigCheckbox = bigCheckboxRef.current;
+  useLayoutEffect(() => {
+    if (!bigCheckboxRef.current) return;
+    const bigCheckbox = bigCheckboxRef.current;
+
+    if (regions) {
       const numSelected = selectedRegions.size;
 
       if (numSelected === 0 || numSelected === regions.length) {
@@ -18,13 +20,15 @@ const RegionsFilter = ({ classes, regions, selectedRegions, onChange }) => {
         bigCheckbox.style.appearance = "checkbox";
         bigCheckbox.indeterminate = true;
       }
+    } else {
+      bigCheckbox.checked = true;
     }
   }, [bigCheckboxRef, regions, selectedRegions]);
 
   if (!regions) return null;
 
   return (
-    <aside className={classes}>
+    <aside className={className}>
       <label className="inline-flex items-center">
         <input
           ref={bigCheckboxRef}
@@ -39,10 +43,10 @@ const RegionsFilter = ({ classes, regions, selectedRegions, onChange }) => {
         />
         <span className="text-xl">Regions</span>
       </label>
-      <ul className="text-sm mt-2 ml-2">
+      <ul className="text-sm mt-0.5 ml-2">
         {regions &&
           regions.map((region) => (
-            <li key={region} className="-mt-0.5">
+            <li key={region} className="-mt-1.5 2xl:-mt-1">
               <label className="inline-flex items-center my-0">
                 <input
                   type="checkbox"

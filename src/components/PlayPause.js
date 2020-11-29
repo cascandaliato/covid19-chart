@@ -2,10 +2,12 @@ import classNames from "classnames";
 import React from "react";
 import styles from "./PlayPause.module.css";
 
-const PlayPause = ({ playing, onClick }) => (
+const PlayPause = ({ playing, onClick, className }) => (
   <button
     onClick={onClick}
-    className={classNames(styles.button, { [styles.paused]: playing })}
+    className={`${className} ${classNames(styles.button, {
+      [styles.paused]: playing,
+    })}`}
     aria-label="Play/Pause"
   ></button>
 );

@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import React, { useCallback, useEffect, useState } from "react";
 import Chart from "./components/Chart";
 import Footer from "./components/Footer";
+import Header from "./components/Header";
 import OverlaySpinner from "./components/OverlaySpinner";
 import RegionsFilter from "./components/RegionsFilter";
 import getAngle from "./helpers/get-angle";
@@ -157,67 +158,40 @@ const App = () => {
   };
 
   return (
-    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center h-screen">
-      <div className="flex flex-no-wrap flex-col justify-between items-center w-full">
-        <header className="w-full flex flex-no-wrap flex-col justify-between items-center flex-grow">
-          <div className="w-full bg-red-600 shadow-sm">
-            <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-4">
-              COVID-19 Growth in Italian Regions
-            </p>
-          </div>
-          <p className="mt-6 px-6 max-w-3xl text-left">
-            This interactive chart compares the number of total cases with the
-            number of new cases in the previous week. It is plotted using a{" "}
-            <a
-              href="https://en.wikipedia.org/wiki/Logarithmic_scale"
-              className="text-red-600 hover:underline"
-            >
-              logarithmic scale
-            </a>{" "}
-            so that{" "}
-            <a
-              href="https://en.wikipedia.org/wiki/Exponential_growth"
-              className="text-red-600 hover:underline"
-            >
-              exponential growth
-            </a>{" "}
-            is represented by a straight line along which cases double every
-            week.
-          </p>
-        </header>
-        <main className="w-11/12 -mt-8">
-          <OverlaySpinner
-            loading={!chartReady}
-            duration={1000}
-            onAnimationEnd={useCallback(() => setPageReady(true), [
-              setPageReady,
-            ])}
-          >
-            <Chart
-              data={traces}
-              layout={layout}
-              revision={revision}
-              onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
-              onHover={handleHover}
-              onUnhover={handleUnhover}
-              onRelayout={adjustAnnotationAngle}
-              sliderValue={currentDay}
-              onSliderChange={setCurrentDay}
-              sliderMax={numDays - 2}
-              date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
-              onPlayPauseClick={playing ? pause : play}
-              playing={playing}
-            />
-            <RegionsFilter
-              classes="ml-4 mt-8"
-              regions={regions}
-              selectedRegions={selectedRegions}
-              onChange={setSelectedRegions}
-            />
-          </OverlaySpinner>
-        </main>
-      </div>
-      <Footer />
+    <div className="font-sans grid grid-cols-12 grid-rows-12 min-h-screen items-stretch justify-items-stretch">
+      <Header className="row-span-3 col-span-full" />
+      <main className="row-start-4 row-span-8 col-span-full -mt-20">
+        <OverlaySpinner
+          loading={!chartReady}
+          duration={1000}
+          onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
+          className="flex justify-center items-start"
+        >
+          <Chart
+            className="w-full sm:w-5/6 h-full"
+            data={traces}
+            layout={layout}
+            revision={revision}
+            onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+            onHover={handleHover}
+            onUnhover={handleUnhover}
+            onRelayout={adjustAnnotationAngle}
+            sliderValue={currentDay}
+            onSliderChange={setCurrentDay}
+            sliderMax={numDays - 2}
+            date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
+            onPlayPauseClick={playing ? pause : play}
+            playing={playing}
+          />
+          <RegionsFilter
+            className="hidden lg:block lg:ml-4 sm:mt-20"
+            regions={regions}
+            selectedRegions={selectedRegions}
+            onChange={setSelectedRegions}
+          />
+        </OverlaySpinner>
+      </main>
+      <Footer className="row-start-12 col-span-full" />
     </div>
   );
 };

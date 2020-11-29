@@ -1,8 +1,10 @@
 import React from "react";
 
-const Footer = () => (
-  <footer className="text-xs text-gray-700 flex flex-col justify-end items-center pb-1 mt-8">
-    <span className="text-center">
+const Footer = ({ className }) => (
+  <footer
+    className={`${className} text-xs text-gray-700 flex flex-col justify-end items-center pb-1`}
+  >
+    <span>
       Inspired by{" "}
       <a
         href="https://aatishb.com/covidtrends/"
@@ -29,7 +31,7 @@ const Footer = () => (
         www.flaticon.com
       </a>
     </span>
-    <span>
+    <span className="order-first sm:order-3">
       © 2020{" "}
       <a
         href="https://github.com/cascandaliato"
