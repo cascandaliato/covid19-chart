@@ -157,15 +157,16 @@ const App = () => {
   };
 
   return (
-    <div className="font-sans flex flex-no-wrap flex-col justify-between items-center h-screen">
-      <div className="flex flex-no-wrap flex-col justify-between items-center w-full">
-        <header className="w-full flex flex-no-wrap flex-col justify-between items-center flex-grow">
-          <div className="w-full bg-red-600 shadow-sm">
-            <p className="animate__animated animate__fadeInDown font-bold text-3xl text-white text-center my-4">
-              COVID-19 Growth in Italian Regions
-            </p>
-          </div>
-          <p className="mt-6 px-6 max-w-3xl text-left">
+    <div className="font-sans grid grid-cols-12 grid-rows-12 min-h-screen items-stretch justify-items-stretch">
+      <header className="row-span-3 col-span-full">
+        <div className="bg-red-600 shadow-sm py-1 sm:py-4">
+          <p className="animate__animated animate__fadeInDown font-bold text-lg sm:text-3xl text-white text-center">
+            <span class="inline-block">COVID-19 Growth</span>{" "}
+            <span class="inline-block">in Italian Regions</span>
+          </p>
+        </div>
+        <div className="flex items-center justify-center">
+          <p className="max-w-2xl text-left mx-6 mt-2 sm:mt-5 text-sm">
             This interactive chart compares the number of total cases with the
             number of new cases in the previous week. It is plotted using a{" "}
             <a
@@ -184,40 +185,40 @@ const App = () => {
             is represented by a straight line along which cases double every
             week.
           </p>
-        </header>
-        <main className="w-11/12 -mt-8">
-          <OverlaySpinner
-            loading={!chartReady}
-            duration={1000}
-            onAnimationEnd={useCallback(() => setPageReady(true), [
-              setPageReady,
-            ])}
-          >
-            <Chart
-              data={traces}
-              layout={layout}
-              revision={revision}
-              onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
-              onHover={handleHover}
-              onUnhover={handleUnhover}
-              onRelayout={adjustAnnotationAngle}
-              sliderValue={currentDay}
-              onSliderChange={setCurrentDay}
-              sliderMax={numDays - 2}
-              date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
-              onPlayPauseClick={playing ? pause : play}
-              playing={playing}
-            />
-            <RegionsFilter
-              classes="ml-4 mt-8"
-              regions={regions}
-              selectedRegions={selectedRegions}
-              onChange={setSelectedRegions}
-            />
-          </OverlaySpinner>
-        </main>
-      </div>
-      <Footer />
+        </div>
+      </header>
+      <main className="row-start-4 row-span-8 col-span-full -mt-20">
+        <OverlaySpinner
+          loading={!chartReady}
+          duration={1000}
+          onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
+          containerClasses="flex justify-center items-start"
+        >
+          <Chart
+            classes="w-full sm:w-5/6 h-full"
+            data={traces}
+            layout={layout}
+            revision={revision}
+            onInitialized={(_, graphDiv) => setPlotlyDiv(graphDiv)}
+            onHover={handleHover}
+            onUnhover={handleUnhover}
+            onRelayout={adjustAnnotationAngle}
+            sliderValue={currentDay}
+            onSliderChange={setCurrentDay}
+            sliderMax={numDays - 2}
+            date={dates && dayjs(dates[currentDay - 1]).format("MMMM D YYYY")}
+            onPlayPauseClick={playing ? pause : play}
+            playing={playing}
+          />
+          <RegionsFilter
+            classes="hidden lg:block lg:ml-4 sm:mt-20"
+            regions={regions}
+            selectedRegions={selectedRegions}
+            onChange={setSelectedRegions}
+          />
+        </OverlaySpinner>
+      </main>
+      <Footer classes="row-start-12 col-span-full" />
     </div>
   );
 };
