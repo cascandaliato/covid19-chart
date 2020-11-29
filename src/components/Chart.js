@@ -9,7 +9,7 @@ const Plot = createPlotlyComponent(Plotly);
 const plotlyConfig = { modeBarButtons: [[]], displaylogo: false };
 
 const Chart = ({
-  classes,
+  className,
   data,
   layout,
   revision,
@@ -24,7 +24,7 @@ const Chart = ({
   onPlayPauseClick,
   playing,
 }) => (
-  <div className={`${classes} flex flex-col justify-start items-center`}>
+  <div className={`${className} flex flex-col justify-start items-center`}>
     <Plot
       data={data}
       layout={layout}
@@ -41,7 +41,7 @@ const Chart = ({
       <PlayPause
         onClick={onPlayPauseClick}
         playing={playing}
-        classes="sm:order-1"
+        className="sm:order-1"
       />
       <span className="order-first sm:order-2 text-center sm:text-xl min-w-full sm:min-w-13rem">
         {date}

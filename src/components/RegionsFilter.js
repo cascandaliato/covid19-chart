@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from "react";
 
-const RegionsFilter = ({ classes, regions, selectedRegions, onChange }) => {
+const RegionsFilter = ({ className, regions, selectedRegions, onChange }) => {
   const bigCheckboxRef = useRef(null);
 
   // woark around Tailwind CSS forms not styling indeterminate checkboxes properly
@@ -28,7 +28,7 @@ const RegionsFilter = ({ classes, regions, selectedRegions, onChange }) => {
   if (!regions) return null;
 
   return (
-    <aside className={classes}>
+    <aside className={className}>
       <label className="inline-flex items-center">
         <input
           ref={bigCheckboxRef}

@@ -29,7 +29,7 @@ const Fade = ({
   onExited,
   unmountOnExit,
   positionAbsolute = true,
-  containerClasses = "flex items-center justify-center",
+  className = "flex items-center justify-center",
 }) => {
   const div = useRef(null);
   const classes = useFadeStyles(initialOpacity, duration)();
@@ -52,7 +52,7 @@ const Fade = ({
       >
         <div
           ref={div}
-          className={`w-full h-full ${containerClasses}
+          className={`w-full h-full ${className}
           ${positionAbsolute ? "absolute" : "relative"} ${classes.enter}`}
         >
           {children}
@@ -68,7 +68,7 @@ const OverlaySpinner = ({
   children,
   onAnimationEnd,
   initialOpacity = 0.1,
-  containerClasses,
+  className,
 }) => (
   <div className="relative w-full h-full">
     <Fade
@@ -100,7 +100,7 @@ const OverlaySpinner = ({
       unmountOnExit={false}
       visible={!loading}
       positionAbsolute={false}
-      containerClasses={containerClasses}
+      className={className}
     >
       {children}
     </Fade>

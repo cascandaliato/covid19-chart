@@ -1,8 +1,8 @@
 import React from "react";
 
-const Footer = ({ classes }) => (
+const Footer = ({ className }) => (
   <footer
-    className={`${classes} text-xs text-gray-700 flex flex-col justify-end items-center pb-1`}
+    className={`${className} text-xs text-gray-700 flex flex-col justify-end items-center pb-1`}
   >
     <span>
       Inspired by{" "}

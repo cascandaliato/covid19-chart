@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import React, { useCallback, useEffect, useState } from "react";
 import Chart from "./components/Chart";
 import Footer from "./components/Footer";
+import Header from "./components/Header";
 import OverlaySpinner from "./components/OverlaySpinner";
 import RegionsFilter from "./components/RegionsFilter";
 import getAngle from "./helpers/get-angle";
@@ -158,44 +159,16 @@ const App = () => {
 
   return (
     <div className="font-sans grid grid-cols-12 grid-rows-12 min-h-screen items-stretch justify-items-stretch">
-      <header className="row-span-3 col-span-full">
-        <div className="bg-red-600 shadow-sm py-1 sm:py-4">
-          <p className="animate__animated animate__fadeInDown font-bold text-lg sm:text-3xl text-white text-center">
-            <span class="inline-block">COVID-19 Growth</span>{" "}
-            <span class="inline-block">in Italian Regions</span>
-          </p>
-        </div>
-        <div className="flex items-center justify-center">
-          <p className="max-w-2xl text-left mx-6 mt-2 sm:mt-5 text-sm">
-            This interactive chart compares the number of total cases with the
-            number of new cases in the previous week. It is plotted using a{" "}
-            <a
-              href="https://en.wikipedia.org/wiki/Logarithmic_scale"
-              className="text-red-600 hover:underline"
-            >
-              logarithmic scale
-            </a>{" "}
-            so that{" "}
-            <a
-              href="https://en.wikipedia.org/wiki/Exponential_growth"
-              className="text-red-600 hover:underline"
-            >
-              exponential growth
-            </a>{" "}
-            is represented by a straight line along which cases double every
-            week.
-          </p>
-        </div>
-      </header>
+      <Header className="row-span-3 col-span-full" />
       <main className="row-start-4 row-span-8 col-span-full -mt-20">
         <OverlaySpinner
           loading={!chartReady}
           duration={1000}
           onAnimationEnd={useCallback(() => setPageReady(true), [setPageReady])}
-          containerClasses="flex justify-center items-start"
+          className="flex justify-center items-start"
         >
           <Chart
-            classes="w-full sm:w-5/6 h-full"
+            className="w-full sm:w-5/6 h-full"
             data={traces}
             layout={layout}
             revision={revision}
@@ -211,14 +184,14 @@ const App = () => {
             playing={playing}
           />
           <RegionsFilter
-            classes="hidden lg:block lg:ml-4 sm:mt-20"
+            className="hidden lg:block lg:ml-4 sm:mt-20"
             regions={regions}
             selectedRegions={selectedRegions}
             onChange={setSelectedRegions}
           />
         </OverlaySpinner>
       </main>
-      <Footer classes="row-start-12 col-span-full" />
+      <Footer className="row-start-12 col-span-full" />
     </div>
   );
 };
