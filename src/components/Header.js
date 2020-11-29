@@ -4,7 +4,7 @@ const Header = ({ className }) => (
   <header className={className}>
     <div className="bg-red-600 shadow-sm py-1 sm:py-4">
       <p className="animate__animated animate__fadeInDown font-bold text-lg sm:text-3xl text-white text-center">
-        COVID-19 growth in Italian Regions
+        COVID-19 Growth in Italian Regions
       </p>
     </div>
     <div className="flex items-center justify-center">
