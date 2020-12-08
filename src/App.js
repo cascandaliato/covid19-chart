@@ -12,6 +12,7 @@ import getTraces from "./helpers/get-traces";
 import styles from "./helpers/styles";
 import useAutoIncrementingCounter from "./hooks/use-auto-incrementing-counter";
 import useCovidData from "./hooks/use-covid-data";
+import useThrottling from "./hooks/use-throttling";
 
 const DELTA_DAYS = 7;
 const EMPTY_SET = new Set();
@@ -142,20 +143,30 @@ const App = () => {
     setRevision((r) => r + 1);
   }, [currentDay, pageReady, frames, regions, selectedRegions]);
 
-  const handleHover = (e) => {
-    const regionsIdx = e.points.reduce(
-      (r, p) => [...r, p.curveNumber % regions.length],
-      []
-    );
-    setHoveredTraces((t) => new Set([...t, ...regionsIdx]));
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleHover = useCallback(
+    useThrottling((e) => {
+      const regionsIdx = e.points.reduce(
+        (r, p) => [...r, p.curveNumber % regions.length],
+        []
+      );
+      setHoveredTraces((t) => new Set([...t, ...regionsIdx]));
+    }),
+    [regions]
+  );
 
-  const handleUnhover = (e) => {
-    const regionsIdx = new Set(
-      e.points.reduce((r, p) => [...r, p.curveNumber % regions.length], [])
-    );
-    setHoveredTraces((t) => new Set([...t].filter((i) => !regionsIdx.has(i))));
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleUnhover = useCallback(
+    useThrottling((e) => {
+      const regionsIdx = new Set(
+        e.points.reduce((r, p) => [...r, p.curveNumber % regions.length], [])
+      );
+      setHoveredTraces(
+        (t) => new Set([...t].filter((i) => !regionsIdx.has(i)))
+      );
+    }),
+    [regions]
+  );
 
   return (
     <div className="font-sans grid grid-cols-12 grid-rows-12 min-h-screen items-stretch justify-items-stretch">
