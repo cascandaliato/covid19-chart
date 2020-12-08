@@ -112,7 +112,7 @@ const App = () => {
     setTraces((oldTraces) => {
       const newTraces = [...oldTraces];
       newTraces.forEach((trace, idx) => {
-        if (idx > regions.length) return;
+        if (idx >= regions.length) return;
 
         if (hoveredTraces.has(idx)) {
           trace.line.color = styles.MAIN_COLOR;
