@@ -7,9 +7,13 @@
     "@tailwindcss/custom-forms": "^0.2.1",
     "animate.css": "^4.1.1",
     "autoprefixer": "^10.0.4",
+    "chokidar-cli": "^2.1.0",
     "classnames": "^2.2.6",
+    "cross-env": "^7.0.2",
     "dayjs": "^1.9.6",
     "lodash": "^4.17.20",
+    "move-file-cli": "^2.0.0",
+    "npm-run-all": "^4.1.5",
     "plotly.js-basic-dist": "^1.57.1",
     "postcss": "^8.1.10",
     "react": "^17.0.1",
@@ -19,7 +23,11 @@
     "react-plotly.js": "^2.5.0",
     "react-scripts": "4.0.1",
     "react-transition-group": "^4.4.1",
+    "tailwindcss": "^2.0.1",
     "tailwindcss-cli": "^0.1.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
   },
   "scripts": {
     "start": "npm-run-all build:tailwind --parallel watch:tailwind start:react",
@@ -48,12 +56,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "chokidar-cli": "^2.1.0",
-    "cross-env": "^7.0.2",
-    "move-file-cli": "^2.0.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.1"
   }
 }
