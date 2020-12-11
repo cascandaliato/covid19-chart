@@ -44,7 +44,7 @@ const Footer = ({ className }) => (
       </a>{" "}
       <a
         href="https://github.com/cascandaliato/covid19-chart"
-        title="Project's repo"
+        title="Project's GitHub repository"
         className="hover:underline text-gray-900"
       >
         <FontAwesomeIcon icon={faGithub} size="lg" />
