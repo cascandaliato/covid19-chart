@@ -34,7 +34,7 @@ const Footer = ({ className }) => (
       </a>
     </span>
     <span className="order-first sm:order-3">
-      © 2020{" "}
+      Built by{" "}
       <a
         href="https://cascandaliato.com"
         title="Author's home page"
