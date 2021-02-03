@@ -16,7 +16,7 @@ jobs:
           persist-credentials: false
       - name: Audit URLs using Lighthouse 💡🏡
         id: LHCIAction
-        uses: treosh/lighthouse-ci-action@v3
+        uses: treosh/lighthouse-ci-action@v7
         with:
           urls: 'https://casca.dev/goto'
           uploadArtifacts: true
