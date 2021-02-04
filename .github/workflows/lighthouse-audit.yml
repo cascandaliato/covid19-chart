@@ -10,7 +10,7 @@ jobs:
         if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
         uses: actions/checkout@v2
         with:
-          repository: 'casca/lighthouse-reports'
+          repository: "cascandaliato/lighthouse-reports"
           ref: master
           persist-credentials: false
       - name: Audit URLs using Lighthouse 💡🏡
@@ -18,21 +18,21 @@ jobs:
         if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
         uses: treosh/lighthouse-ci-action@v7
         with:
-          urls: 'https://casca.dev/covid'
+          urls: "https://cascandaliato.com/covid"
           uploadArtifacts: true
           temporaryPublicStorage: true
-      - run: cp ${{steps.LHCIAction.outputs.resultsPath}}/lhr*.json $GITHUB_WORKSPACE/casca.dev-covid.json
+      - run: cp ${{steps.LHCIAction.outputs.resultsPath}}/lhr*.json $GITHUB_WORKSPACE/cascandaliato.com-covid.json
         if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
       - name: Commit files
         if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
         run: |
-          git config --local user.name "casca"
-          git config --local user.email "8927157+casca@users.noreply.github.com"
-          git add casca.dev-covid.json
-          git commit -m "Update lighthouse report for casca.dev/covid"
+          git config --local user.name "cascandaliato"
+          git config --local user.email "8927157+cascandaliato@users.noreply.github.com"
+          git add cascandaliato.com-covid.json
+          git commit -m "Update lighthouse report for cascandaliato.com/covid"
       - name: Push changes
         if: github.event.deployment.environment == 'Production' && github.event.deployment_status.state == 'success'
         uses: ad-m/github-push-action@master
         with:
-          repository: 'casca/lighthouse-reports'
+          repository: "cascandaliato/lighthouse-reports"
           github_token: ${{ secrets.PUSH_TOKEN }}
