@@ -10,7 +10,7 @@
     "@tailwindcss/custom-forms": "^0.2.1",
     "animate.css": "^4.1.1",
     "autoprefixer": "^10.0.4",
-    "chokidar-cli": "^2.1.0",
+    "chokidar-cli": "^3.0.0",
     "classnames": "^2.2.6",
     "cross-env": "^7.0.2",
     "dayjs": "^1.9.6",
